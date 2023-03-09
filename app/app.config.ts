@@ -30,7 +30,15 @@ const defineConfig = () => ({
          projectId: "your-project-id",
       },
    },
-   plugins: ["./expo-plugins/with-modify-gradle.js"],
+   plugins: [
+      "./expo-plugins/with-modify-gradle.js",
+      [
+         "expo-barcode-scanner",
+         {
+            cameraPermission: "Allow Reddam GO to access camera.",
+         },
+      ],
+   ],
 });
 
 export default defineConfig;

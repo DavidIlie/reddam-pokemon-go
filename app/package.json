@@ -8,13 +8,20 @@
       "dev:ios": "expo start --ios"
    },
    "dependencies": {
+      "@expo/vector-icons": "^13.0.0",
       "expo": "^48.0.4",
+      "expo-barcode-scanner": "~12.3.2",
+      "expo-camera": "~13.2.1",
       "expo-constants": "~14.2.1",
+      "expo-secure-store": "~12.1.1",
       "nativewind": "^2.0.11",
       "react": "18.2.0",
       "react-dom": "18.2.0",
       "react-native": "0.71.3",
-      "react-native-safe-area-context": "4.5.0"
+      "react-native-camera": "^4.2.1",
+      "react-native-qrcode-scanner": "^1.5.5",
+      "react-native-safe-area-context": "4.5.0",
+      "react-native-websocket": "^1.0.2"
    },
    "devDependencies": {
       "@babel/core": "^7.20.0",

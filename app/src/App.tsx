@@ -1,12 +1,10 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+
+import * as SecureStore from "expo-secure-store";
 
 const Home: React.FC = () => {
-   return (
-      <View>
-         <Text>Hey</Text>
-      </View>
-   );
+   return <View />;
 };
 
 export default Home;

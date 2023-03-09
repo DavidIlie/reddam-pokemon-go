@@ -2,23 +2,22 @@ lockfileVersion: 5.4
 
 specifiers:
   '@prisma/client': ^4.9.0
-  '@types/body-parser': ^1.19.2
   '@types/eslint': ^8.21.1
   '@types/express': ^4.17.17
+  '@types/express-ws': ^3.0.1
   '@types/jsonwebtoken': ^9.0.1
   '@types/node': ^18.14.0
   '@types/prettier': ^2.7.2
   '@types/react': ^18.0.28
   '@types/react-dom': ^18.0.11
   '@types/uuid': ^9.0.1
-  '@types/ws': ^8.5.4
   '@typescript-eslint/eslint-plugin': ^5.53.0
   '@typescript-eslint/parser': ^5.53.0
   autoprefixer: ^10.4.7
-  body-parser: ^1.20.2
   eslint: ^8.34.0
   eslint-config-next: ^13.2.1
   express: ^4.18.2
+  express-ws: ^5.0.2
   jsonwebtoken: ^9.0.0
   next: ^13.2.1
   postcss: ^8.4.14
@@ -31,32 +30,29 @@ specifiers:
   ts-node: ^10.9.1
   typescript: ^4.9.5
   uuid: ^9.0.0
-  ws: ^8.12.1
   zod: ^3.20.6
 
 dependencies:
   '@prisma/client': 4.11.0_prisma@4.11.0
-  body-parser: 1.20.2
   express: 4.18.2
+  express-ws: 5.0.2_express@4.18.2
   jsonwebtoken: 9.0.0
   next: 13.2.3_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   uuid: 9.0.0
-  ws: 8.12.1
   zod: 3.21.4
 
 devDependencies:
-  '@types/body-parser': 1.19.2
   '@types/eslint': 8.21.1
   '@types/express': 4.17.17
+  '@types/express-ws': 3.0.1
   '@types/jsonwebtoken': 9.0.1
   '@types/node': 18.14.6
   '@types/prettier': 2.7.2
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
   '@types/uuid': 9.0.1
-  '@types/ws': 8.5.4
   '@typescript-eslint/eslint-plugin': 5.54.1_mlk7dnz565t663n4razh6a6v6i
   '@typescript-eslint/parser': 5.54.1_ycpbpc6yetojsgtrx3mwntkhsu
   autoprefixer: 10.4.13_postcss@8.4.21
@@ -382,6 +378,14 @@ packages:
       '@types/node': 18.14.6
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
+    dev: true
+
+  /@types/express-ws/3.0.1:
+    resolution: {integrity: sha512-VguRXzcpPBF0IggIGpUoM65cZJDfMQxoc6dKoCz1yLzcwcXW7ft60yhq3ygKhyEhEIQFtLrWjyz4AJ1qjmzCFw==}
+    dependencies:
+      '@types/express': 4.17.17
+      '@types/express-serve-static-core': 4.17.33
+      '@types/ws': 8.5.4
     dev: true
 
   /@types/express/4.17.17:
@@ -802,26 +806,6 @@ packages:
       on-finished: 2.4.1
       qs: 6.11.0
       raw-body: 2.5.1
-      type-is: 1.6.18
-      unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /body-parser/1.20.2:
-    resolution: {integrity: sha512-ml9pReCu3M61kGlqoTm2umSXTlRTuGTx0bfYj+uIUKKYycG5NtSbeetV3faSU6R7ajOPw0g/J1PvK4qNy7s5bA==}
-    engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
-    dependencies:
-      bytes: 3.1.2
-      content-type: 1.0.5
-      debug: 2.6.9
-      depd: 2.0.0
-      destroy: 1.2.0
-      http-errors: 2.0.0
-      iconv-lite: 0.4.24
-      on-finished: 2.4.1
-      qs: 6.11.0
-      raw-body: 2.5.2
       type-is: 1.6.18
       unpipe: 1.0.0
     transitivePeerDependencies:
@@ -1526,6 +1510,19 @@ packages:
   /etag/1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /express-ws/5.0.2_express@4.18.2:
+    resolution: {integrity: sha512-0uvmuk61O9HXgLhGl3QhNSEtRsQevtmbL94/eILaliEADZBHZOQUAiHFrGPrgsjikohyrmSG5g+sCfASTt0lkQ==}
+    engines: {node: '>=4.5.0'}
+    peerDependencies:
+      express: ^4.0.0 || ^5.0.0-alpha.1
+    dependencies:
+      express: 4.18.2
+      ws: 7.5.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /express/4.18.2:
@@ -2717,16 +2714,6 @@ packages:
       unpipe: 1.0.0
     dev: false
 
-  /raw-body/2.5.2:
-    resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
-    engines: {node: '>= 0.8'}
-    dependencies:
-      bytes: 3.1.2
-      http-errors: 2.0.0
-      iconv-lite: 0.4.24
-      unpipe: 1.0.0
-    dev: false
-
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -3274,12 +3261,12 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  /ws/8.12.1:
-    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
-    engines: {node: '>=10.0.0'}
+  /ws/7.5.9:
+    resolution: {integrity: sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==}
+    engines: {node: '>=8.3.0'}
     peerDependencies:
       bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
+      utf-8-validate: ^5.0.2
     peerDependenciesMeta:
       bufferutil:
         optional: true
