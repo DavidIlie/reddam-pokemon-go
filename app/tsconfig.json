@@ -1,0 +1,16 @@
+{
+   "extends": "./tsconfigbig.json",
+   "compilerOptions": {
+      "jsx": "react-native",
+      "types": ["nativewind/types"]
+   },
+   "include": [
+      "src",
+      "expo-plugins",
+      "src",
+      "app.config.ts",
+      "index.ts",
+      "App.tsx"
+   ],
+   "exclude": ["node_modules"]
+}
