@@ -1,6 +1,7 @@
 import type { NextPage, GetServerSideProps } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import QRCode from "react-qr-code";
 
 const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
   needPass = false,
@@ -10,7 +11,16 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
 
   if (needPass) return <GetPass />;
 
-  return <div>Hi</div>;
+  const createQRCodeForLogin = async () => {};
+
+  const [qrCodeGenerated, setQrCodeGenerated] = useState("hey");
+
+  return (
+    <div>
+      <button onClick={createQRCodeForLogin}>create QR code for login</button>
+      {qrCodeGenerated && <QRCode value={qrCodeGenerated} />}
+    </div>
+  );
 };
 
 const GetPass: React.FC = () => {

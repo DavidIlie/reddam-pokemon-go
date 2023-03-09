@@ -1,6 +1,6 @@
 import express from "express";
 import next from "next";
-import expressWs from "express-ws";
+// import expressWs from "express-ws";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -11,15 +11,15 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(async () => {
   const server = express();
-  const expressWsInstance = expressWs(server).app;
+  // const expressWsInstance = expressWs(server).app;
 
-  expressWsInstance.ws("/ws", (ws, req) => {
-    console.log("CONNECT:", req.headers);
+  // expressWsInstance.ws("/ws", (ws, req) => {
+  //   console.log("CONNECT:", req.headers);
 
-    ws.on("message", (msg: String) => {
-      ws.send(`message: ${msg}`);
-    });
-  });
+  //   ws.on("message", (msg: String) => {
+  //     ws.send(`message: ${msg}`);
+  //   });
+  // });
 
   server.all("*", (req, res) => handle(req, res));
 
