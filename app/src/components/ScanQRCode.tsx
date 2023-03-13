@@ -16,7 +16,7 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
 }) => {
    const [hasPermission, setHasPermission] = useState<boolean | null>(null);
    const [scanned, setScanned] = useState(false);
-   const [type, setType] = useState(CameraType.front);
+   const [type, setType] = useState(CameraType.back);
 
    useEffect(() => {
       (async () => {
@@ -31,12 +31,12 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
    };
 
    const handleCameraFlip = () => {
-      setType(type === CameraType.front ? CameraType.back : CameraType.front);
+      setType(type === CameraType.back ? CameraType.front : CameraType.back);
    };
 
    if (hasPermission === null) {
       return (
-         <View className="flex-1 justify-center items-center">
+         <View className="items-center justify-center flex-1">
             <Text>null</Text>
          </View>
       );
@@ -44,7 +44,7 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
 
    if (hasPermission === false) {
       return (
-         <View className="flex-1 justify-center items-center">
+         <View className="items-center justify-center flex-1">
             <Text>No access to camera</Text>
          </View>
       );
@@ -52,17 +52,17 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
 
    return (
       <SafeAreaView className="mt-12">
-         <Text className="text-center text-2xl font-medium">{title}</Text>
+         <Text className="text-2xl font-medium text-center">{title}</Text>
          <Camera
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={{ height: 500, width: 500 }}
             type={type}
          />
          <TouchableOpacity
-            className="bg-blue-500 py-2 px-4 rounded-md text-center mx-auto mt-2"
+            className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
             onPress={handleCameraFlip}
          >
-            <Text className="text-white font-medium text-xl">Flip Camera</Text>
+            <Text className="text-xl font-medium text-white">Flip Camera</Text>
          </TouchableOpacity>
       </SafeAreaView>
    );
