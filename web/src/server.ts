@@ -2,6 +2,7 @@ import express from "express";
 import expressWs from "express-ws";
 
 import { prisma } from "./lib/db";
+import { checkAuth } from "./pages/api/admin/check-auth";
 
 const server = express();
 const expressWsInstance = expressWs(server).app;
@@ -32,8 +33,13 @@ expressWsInstance.ws("/ws", async (ws, req) => {
   });
 });
 
-server.get("/message", (req, res) => {
+server.get("/message", async (req, res) => {
   const query = req.query;
+  const auth = query.auth;
+
+  const check = await checkAuth((auth as string) || "");
+  if (!check) return res.status(401).json({ message: "bye" });
+
   const { message } = JSON.parse(query.message as any);
   const connectionId = query.connectionId;
 
