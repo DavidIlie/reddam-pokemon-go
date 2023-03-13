@@ -28,7 +28,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
     isLoading,
     mutate: reload,
   } = useSWR<Connection[]>("/api/admin/connections", fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 5000,
   });
 
   const [revealCode, setRevealCode] = useState<null | string>(null);
