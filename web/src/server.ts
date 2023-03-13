@@ -37,18 +37,16 @@ server.get("/message", (req, res) => {
   const { message } = JSON.parse(query.message as any);
   const connectionId = query.connectionId;
 
-  if (!connectionId) {
+  if (connectionId === "undefined") {
     connections.forEach(async (con) => {
       con.ws.send(JSON.stringify(message));
     });
+    return res.json({ message: "ok" });
   }
 
   try {
-    let connection = connections.filter(
-      (s) => s.connectionId === connectionId
-    )[0];
-    console.log(connection);
-    connection.ws.send(JSON.stringify(message));
+    let con = connections.filter((s) => s.connectionId === connectionId)[0];
+    con.ws.send(JSON.stringify(message));
     return res.json({ message: "ok" });
   } catch (error) {
     console.log(error);
