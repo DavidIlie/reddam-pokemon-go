@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { SafeAreaView, Text } from "react-native";
 import useWebSocket, { ReadyState } from "react-native-use-websocket";
 import type { WebSocketHook } from "react-native-use-websocket/lib/typescript/src/lib/types";
@@ -14,7 +14,13 @@ export const AuthWSWrapper: React.FC<{
    children: React.ReactNode;
 }> = ({ uuid, children }) => {
    const [socketUrl] = useState(`ws://localhost:3001/ws?auth=${uuid}`);
-   const ws = useWebSocket(socketUrl);
+   const ws = useWebSocket(socketUrl, {
+      shouldReconnect: () => true,
+      share: false,
+      onMessage: (e) => {
+         console.log(e);
+      },
+   });
 
    const connectionStatus = {
       [ReadyState.CONNECTING]: "Connecting",
@@ -24,7 +30,9 @@ export const AuthWSWrapper: React.FC<{
       [ReadyState.UNINSTANTIATED]: "Uninstantiated",
    }[ws.readyState];
 
-   if (__DEV__) console.log(`Websocket State: ${connectionStatus}`);
+   useEffect(() => {
+      if (__DEV__) console.log(`Websocket State: ${connectionStatus}`);
+   }, [connectionStatus]);
 
    if (ws.readyState === ReadyState.CLOSED)
       return (

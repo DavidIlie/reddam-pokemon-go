@@ -18,12 +18,15 @@ app.prepare().then(async () => {
 
   expressWsInstance.ws("/ws", async (ws, req) => {
     const { auth } = req.query as { auth: string };
-    if (!auth) ws.close();
+    if (!auth) return ws.close();
 
     const connection = await prisma.connection.findFirst({
       where: { connectionId: auth },
     });
-    if (!connection) ws.close();
+    if (!connection) return ws.close();
+
+    console.log(`CONNECTION: ${connection?.name}`);
+    ws.send("hi");
 
     ws.on("message", (msg: String) => {
       ws.send(`message: ${msg}`);
