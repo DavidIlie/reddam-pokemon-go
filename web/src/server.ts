@@ -1,45 +1,61 @@
 import express from "express";
-import next from "next";
 import expressWs from "express-ws";
-
-const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
-const port = 3000;
-
-const app = next({ dev, hostname, port });
-const handle = app.getRequestHandler();
 
 import { prisma } from "./lib/db";
 
-app.prepare().then(async () => {
-  const server = express();
-  const wsServer = express();
-  const expressWsInstance = expressWs(wsServer).app;
+const server = express();
+const expressWsInstance = expressWs(server).app;
 
-  expressWsInstance.ws("/ws", async (ws, req) => {
-    const { auth } = req.query as { auth: string };
-    if (!auth) return ws.close();
+export let connections = [] as {
+  ws: WebSocket;
+  connectionId: string;
+}[];
 
-    const connection = await prisma.connection.findFirst({
-      where: { connectionId: auth },
+expressWsInstance.ws("/ws", async (ws, req) => {
+  const { auth } = req.query as { auth: string };
+  if (!auth) return ws.close();
+
+  const connection = await prisma.connection.findFirst({
+    where: { connectionId: auth },
+  });
+  if (!connection) return ws.close();
+
+  console.log(`CONNECTION: ${connection.name}`);
+  connections.push({ ws: ws as any, connectionId: connection.connectionId! });
+
+  ws.on("message", (msg: String) => {
+    console.log(`message: ${msg}`);
+  });
+
+  ws.on("close", () => {
+    connections.filter((s) => s.connectionId !== connection.id);
+  });
+});
+
+server.get("/message", (req, res) => {
+  const query = req.query;
+  const { message } = JSON.parse(query.message as any);
+  const connectionId = query.connectionId;
+
+  if (!connectionId) {
+    connections.forEach(async (con) => {
+      con.ws.send(JSON.stringify(message));
     });
-    if (!connection) return ws.close();
+  }
 
-    console.log(`CONNECTION: ${connection?.name}`);
-    ws.send("hi");
+  try {
+    let connection = connections.filter(
+      (s) => s.connectionId === connectionId
+    )[0];
+    console.log(connection);
+    connection.ws.send(JSON.stringify(message));
+    return res.json({ message: "ok" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "error" });
+  }
+});
 
-    ws.on("message", (msg: String) => {
-      console.log(`message: ${msg}`);
-    });
-  });
-
-  wsServer.listen(3001, () => {
-    console.log("> Socket Server Alive on port 3001");
-  });
-
-  server.all("*", (req, res) => handle(req, res));
-
-  server.listen(3000, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
-  });
+server.listen(3001, () => {
+  console.log("> WS server alive on port 3001");
 });
