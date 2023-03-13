@@ -21,7 +21,9 @@
       "react-native-camera": "^4.2.1",
       "react-native-qrcode-scanner": "^1.5.5",
       "react-native-safe-area-context": "4.5.0",
-      "react-native-websocket": "^1.0.2"
+      "react-native-use-websocket": "^0.2.6",
+      "react-native-websocket": "^1.0.2",
+      "ws": "^8.13.0"
    },
    "devDependencies": {
       "@babel/core": "^7.20.0",

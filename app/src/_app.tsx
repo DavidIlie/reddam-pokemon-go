@@ -4,34 +4,31 @@ import * as SecureStore from "expo-secure-store";
 
 import ScanQRCode from "./components/ScanQRCode";
 
-const App: React.FC = () => {
+import App from "./App";
+import { Loading } from "./components/Loading";
+import { AuthWSWrapper } from "./components/WebSocketContext";
+
+const AppUnderscore: React.FC = () => {
    const [loading, setLoading] = useState(true);
    const [needsToAuthQRCode, setNeedsToAuthQRCode] = useState(false);
    const [toggleScan, setToggleScan] = useState(false);
+   const [uuid, setUuid] = useState<string>("");
 
    useEffect(() => {
       const work = async () => {
+         await SecureStore.setItemAsync(
+            "uuid",
+            "914094e8-06b6-45ca-9aa3-55d4ef93d081"
+         );
          const uuid = await SecureStore.getItemAsync("uuid");
-         if (!uuid) setNeedsToAuthQRCode(true);
+         if (!uuid) return setNeedsToAuthQRCode(true);
+         setUuid(uuid);
          setLoading(false);
       };
       work();
    }, []);
 
-   const attemptToWS = async () => {
-      setLoading(true);
-      setTimeout(() => {
-         setLoading(false);
-         setNeedsToAuthQRCode(false);
-      }, 2000);
-   };
-
-   if (loading)
-      return (
-         <SafeAreaView className="flex items-center justify-center h-full">
-            <Text className="text-2xl font-medium">Loading...</Text>
-         </SafeAreaView>
-      );
+   if (loading) return <Loading />;
 
    return (
       <SafeAreaView>
@@ -40,8 +37,9 @@ const App: React.FC = () => {
                <ScanQRCode
                   onSuccess={async (data) => {
                      await SecureStore.setItemAsync("uuid", data);
+                     setUuid(data);
                      setToggleScan(false);
-                     await attemptToWS();
+                     setNeedsToAuthQRCode(false);
                   }}
                   onFail={() => console.log("error")}
                   title="Scan QR Code to Log In"
@@ -56,12 +54,12 @@ const App: React.FC = () => {
                </View>
             )
          ) : (
-            <View className="flex items-center justify-center h-full">
-               <Text>Auth...</Text>
-            </View>
+            <AuthWSWrapper uuid={uuid}>
+               <App />
+            </AuthWSWrapper>
          )}
       </SafeAreaView>
    );
 };
 
-export default App;
+export default AppUnderscore;

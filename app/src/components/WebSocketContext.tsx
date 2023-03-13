@@ -1,0 +1,51 @@
+import React, { useState, createContext, useContext } from "react";
+import { SafeAreaView, Text } from "react-native";
+import useWebSocket, { ReadyState } from "react-native-use-websocket";
+import type { WebSocketHook } from "react-native-use-websocket/lib/typescript/src/lib/types";
+
+import { Loading } from "./Loading";
+
+const WSContext = createContext<{
+   ws: WebSocketHook;
+}>({} as any);
+
+export const AuthWSWrapper: React.FC<{
+   uuid: string;
+   children: React.ReactNode;
+}> = ({ uuid, children }) => {
+   const [socketUrl] = useState(`ws://localhost:3001/ws?auth=${uuid}`);
+   const ws = useWebSocket(socketUrl);
+
+   const connectionStatus = {
+      [ReadyState.CONNECTING]: "Connecting",
+      [ReadyState.OPEN]: "Open",
+      [ReadyState.CLOSING]: "Closing",
+      [ReadyState.CLOSED]: "Closed",
+      [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+   }[ws.readyState];
+
+   if (__DEV__) console.log(`Websocket State: ${connectionStatus}`);
+
+   if (ws.readyState === ReadyState.CLOSED)
+      return (
+         <SafeAreaView>
+            <Text>Connection was closed</Text>
+         </SafeAreaView>
+      );
+
+   if (ws.readyState !== ReadyState.OPEN) return <Loading />;
+
+   return (
+      <WSContext.Provider value={{ ws: ws }}>{children}</WSContext.Provider>
+   );
+};
+
+export const useWS = () => {
+   const ws = useContext(WSContext);
+
+   if (!ws) {
+      throw new Error("WSContext not found");
+   }
+
+   return ws;
+};

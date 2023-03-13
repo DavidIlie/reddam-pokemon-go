@@ -1,5 +1,5 @@
 import { registerRootComponent } from "expo";
 
-import App from "./src/_app";
+import AppUnderscore from "./src/_app";
 
-registerRootComponent(App);
+registerRootComponent(AppUnderscore);

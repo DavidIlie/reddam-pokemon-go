@@ -1,10 +1,18 @@
 import React from "react";
-import { View } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 
-import * as SecureStore from "expo-secure-store";
+import { useWS } from "./components/WebSocketContext";
 
 const Home: React.FC = () => {
-   return <View />;
+   const { ws } = useWS();
+
+   ws.sendMessage("hi");
+
+   return (
+      <SafeAreaView>
+         <Text>I should be connected to a websocket now</Text>
+      </SafeAreaView>
+   );
 };
 
 export default Home;
