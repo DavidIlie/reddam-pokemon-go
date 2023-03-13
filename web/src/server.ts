@@ -29,7 +29,7 @@ app.prepare().then(async () => {
     ws.send("hi");
 
     ws.on("message", (msg: String) => {
-      ws.send(`message: ${msg}`);
+      console.log(`message: ${msg}`);
     });
   });
 
