@@ -57,7 +57,7 @@ const Home: React.FC = () => {
          screenContainer={
             <SafeAreaView className="h-full w-full">
                <View className="p-2">
-                  <Text className="text-lg">
+                  <Text className="text-lg text-center">
                      Total Points:{" "}
                      <Text className="font-bold text-blue-500">
                         {gameData?.completed}
