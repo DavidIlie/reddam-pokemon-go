@@ -8,7 +8,14 @@ const handler: NextApiHandler = async (req, res) => {
   //   { message: "hi" },
   //   "914094e8-06b6-45ca-9aa3-55d4ef93d081"
   // );
-  await sendWSMessage(auth!, { message: "hi" });
+  try {
+    const r = await sendWSMessage(auth!, { message: "hi" });
+    console.log(r.status);
+    const response = await r.json();
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
 
   return res.json({ message: "ok" });
 };

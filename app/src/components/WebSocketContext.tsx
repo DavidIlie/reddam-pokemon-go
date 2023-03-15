@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from "react";
 import { SafeAreaView, Text } from "react-native";
 import useWebSocket, { ReadyState } from "react-native-use-websocket";
 import type { WebSocketHook } from "react-native-use-websocket/lib/typescript/src/lib/types";
+import * as Crypto from "expo-crypto";
 
 import { Loading } from "./Loading";
 
@@ -16,10 +17,7 @@ export const AuthWSWrapper: React.FC<{
    const [socketUrl] = useState(`ws://localhost:3001/ws?auth=${uuid}`);
    const ws = useWebSocket(socketUrl, {
       shouldReconnect: () => true,
-      share: false,
-      onMessage: (e) => {
-         console.log(e);
-      },
+      share: true,
    });
 
    const connectionStatus = {
@@ -33,7 +31,6 @@ export const AuthWSWrapper: React.FC<{
    useEffect(() => {
       if (__DEV__) console.log(`Websocket State: ${connectionStatus}`);
    }, [connectionStatus]);
-
    if (ws.readyState === ReadyState.CLOSED)
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
@@ -47,7 +44,13 @@ export const AuthWSWrapper: React.FC<{
    if (ws.readyState !== ReadyState.OPEN) return <Loading />;
 
    return (
-      <WSContext.Provider value={{ ws: ws }}>{children}</WSContext.Provider>
+      <WSContext.Provider
+         value={{
+            ws: ws,
+         }}
+      >
+         {children}
+      </WSContext.Provider>
    );
 };
 

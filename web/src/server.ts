@@ -16,7 +16,7 @@ expressWsInstance.ws("/ws", async (ws, req) => {
   const { auth } = req.query as { auth: string };
   if (!auth) return ws.close();
 
-  const connection = await prisma.connection.findFirst({
+  let connection = await prisma.connection.findFirst({
     where: { connectionId: auth },
   });
   if (!connection) return ws.close();
@@ -24,12 +24,30 @@ expressWsInstance.ws("/ws", async (ws, req) => {
   console.log(`CONNECTION: ${connection.name}`);
   connections.push({ ws: ws as any, connectionId: connection.connectionId! });
 
-  ws.on("message", (msg: String) => {
-    console.log(`message: ${msg}`);
+  ws.on("message", async (msg: string) => {
+    console.log(msg);
+
+    let { action, id } = JSON.parse(msg);
+
+    const sendWSMessage = (s: {}) =>
+      ws.send(JSON.stringify({ action, res: s }));
+
+    switch (action) {
+      case "getGameData":
+        sendWSMessage(connection!);
+        connection = await prisma.connection.update({
+          where: { id: connection!.id },
+          data: { firstConnection: false },
+        });
+        break;
+
+      default:
+        break;
+    }
   });
 
   ws.on("close", () => {
-    connections.filter((s) => s.connectionId !== connection.id);
+    connections.filter((s) => s.connectionId !== connection!.id);
   });
 });
 
@@ -55,7 +73,6 @@ server.get("/message", async (req, res) => {
     con.ws.send(JSON.stringify(message));
     return res.json({ message: "ok" });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "error" });
   }
 });

@@ -53,7 +53,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
           }}
           className="mb-2"
         >
-          <h1 className="text-xl font-medium">Create a connection</h1>
+          <h1 className="text-xl font-medium">create connection</h1>
           <div className="my-1" />
           <input
             className={inputStyle}
@@ -71,7 +71,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
             onChange={(e) => setPlayers(e.target.value)}
           />
           <div className="my-1" />
-          <button className={buttonStyle}>create QR code for login</button>
+          <button className={buttonStyle}>create qr code for login</button>
         </form>
       </div>
       {isLoading && !data && <div>Loading data...</div>}

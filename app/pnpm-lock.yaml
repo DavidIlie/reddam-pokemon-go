@@ -12,6 +12,9 @@ specifiers:
   expo-barcode-scanner: ~12.3.2
   expo-camera: ~13.2.1
   expo-constants: ~14.2.1
+  expo-crypto: ~12.2.1
+  expo-image: ~1.0.0
+  expo-random: ~13.1.1
   expo-secure-store: ~12.1.1
   nativewind: ^2.0.11
   postcss: ^8.4.21
@@ -21,11 +24,14 @@ specifiers:
   react-native-camera: ^4.2.1
   react-native-qrcode-scanner: ^1.5.5
   react-native-safe-area-context: 4.5.0
+  react-native-slide-modal: ^0.0.32
   react-native-use-websocket: ^0.2.6
   react-native-websocket: ^1.0.2
   tailwindcss: ^3.2.7
   typescript: ^4.9.5
+  uuid: ^9.0.0
   ws: ^8.13.0
+  zustand: ^4.3.6
 
 dependencies:
   '@expo/vector-icons': 13.0.0
@@ -33,6 +39,9 @@ dependencies:
   expo-barcode-scanner: 12.3.2_expo@48.0.6
   expo-camera: 13.2.1_expo@48.0.6+react@18.2.0
   expo-constants: 14.2.1_expo@48.0.6
+  expo-crypto: 12.2.1_expo@48.0.6
+  expo-image: 1.0.0_expo@48.0.6
+  expo-random: 13.1.1_expo@48.0.6
   expo-secure-store: 12.1.1_expo@48.0.6
   nativewind: 2.0.11_dmdrd7wro7is5ymtgffolhsaq4
   react: 18.2.0
@@ -41,9 +50,12 @@ dependencies:
   react-native-camera: 4.2.1
   react-native-qrcode-scanner: 1.5.5_4tv7yx4ondn7pbifnkhnwzeijq
   react-native-safe-area-context: 4.5.0_yqouayos4dnow7nnkhah4yzuzq
+  react-native-slide-modal: 0.0.32_yqouayos4dnow7nnkhah4yzuzq
   react-native-use-websocket: 0.2.6_yqouayos4dnow7nnkhah4yzuzq
   react-native-websocket: 1.0.2
+  uuid: 9.0.0
   ws: 8.13.0
+  zustand: 4.3.6_react@18.2.0
 
 devDependencies:
   '@babel/core': 7.21.0
@@ -3609,6 +3621,15 @@ packages:
       - supports-color
     dev: false
 
+  /expo-crypto/12.2.1_expo@48.0.6:
+    resolution: {integrity: sha512-NfKsREzj55xCm0v9OKuNw3DU1r6i6VNTYrQcYSZfGOp7o+tvZsJRyr+NyrUg5YVH93TUkothCtsPahdYA4r1Wg==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      base64-js: 1.5.1
+      expo: 48.0.6_@babel+core@7.21.0
+    dev: false
+
   /expo-file-system/15.2.2_expo@48.0.6:
     resolution: {integrity: sha512-LFkOLcWwlmnjkURxZ3/0ukS35OswX8iuQknLHRHeyk8mUA8fpRPPelD/a1lS+yclqfqavMJmTXVKM1Nsq5XVMA==}
     peerDependencies:
@@ -3629,6 +3650,14 @@ packages:
 
   /expo-image-loader/4.1.1_expo@48.0.6:
     resolution: {integrity: sha512-ciEHVokU0f6w0eTxdRxLCio6tskMsjxWIoV92+/ZD37qePUJYMfEphPhu1sruyvMBNR8/j5iyOvPFVGTfO8oxA==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.6_@babel+core@7.21.0
+    dev: false
+
+  /expo-image/1.0.0_expo@48.0.6:
+    resolution: {integrity: sha512-A1amVExKhBa/eRXuceauYtPkf9izeje5AbxEWL09tgK91rf3GSIZXM5PSDGlIM0s7dpCV+Iet2jhwcFUfWaZrw==}
     peerDependencies:
       expo: '*'
     dependencies:
@@ -3659,6 +3688,15 @@ packages:
     dependencies:
       compare-versions: 3.6.0
       invariant: 2.2.4
+    dev: false
+
+  /expo-random/13.1.1_expo@48.0.6:
+    resolution: {integrity: sha512-+KkhGp7xW45GvMRzlcSOzvDwzTgyXo6C84GaG4GI43rOdECBQ2lGUJ12st39OtfZm1lORNskpi66DjnuJ73g9w==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      base64-js: 1.5.1
+      expo: 48.0.6_@babel+core@7.21.0
     dev: false
 
   /expo-secure-store/12.1.1_expo@48.0.6:
@@ -6352,6 +6390,16 @@ packages:
       react-native: 0.71.3_raab37p3ikkajcivlo24zcd7ie
     dev: false
 
+  /react-native-slide-modal/0.0.32_yqouayos4dnow7nnkhah4yzuzq:
+    resolution: {integrity: sha512-GxO6gNxhZ4ZmuqJNKAcJ1j1elNScsZH14P6HZNdfhGjRHUm3N6GCpLAMp+wdiKYUXMIMRB1BlhdKOVnB9il7iA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 18.2.0
+      react-native: 0.71.3_raab37p3ikkajcivlo24zcd7ie
+    dev: false
+
   /react-native-use-websocket/0.2.6_yqouayos4dnow7nnkhah4yzuzq:
     resolution: {integrity: sha512-P+bj0rt+pSDFfte6VokMrpYVXg8Z+MCwhjQAyca5bFKpZ7NKJ/eBjuhJKg8lZS4gedYU0dPaNSVceVsk6RpToQ==}
     peerDependencies:
@@ -7551,6 +7599,11 @@ packages:
     hasBin: true
     dev: false
 
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
+
   /valid-url/1.0.9:
     resolution: {integrity: sha512-QQDsV8OnSf5Uc30CKSwG9lnhMPe6exHtTXLRYX8uMwKENy640pU+2BgBL0LRbDh/eYRahNCS7aewCx0wf3NYVA==}
     dev: false
@@ -7788,3 +7841,19 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zustand/4.3.6_react@18.2.0:
+    resolution: {integrity: sha512-6J5zDxjxLE+yukC2XZWf/IyWVKnXT9b9HUv09VJ/bwGCpKNcaTqp7Ws28Xr8jnbvnZcdRaidztAPsXFBIqufiw==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
+    dev: false

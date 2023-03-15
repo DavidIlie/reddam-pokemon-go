@@ -8,9 +8,10 @@ datasource db {
 }
 
 model Connection {
-  id           String   @id @default(uuid())
-  name         String
-  players      String[]
-  connectionId String?   @default(uuid())
-  completed    Int?      @default(0)
+  id              String   @id @default(uuid())
+  name            String
+  players         String[]
+  connectionId    String?  @default(uuid())
+  completed       Int?     @default(0)
+  firstConnection Boolean  @default(true)
 }
