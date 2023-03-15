@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, Text, View, Image } from "react-native";
+import {
+   SafeAreaView,
+   Text,
+   View,
+   Image,
+   TouchableOpacity,
+} from "react-native";
 import { SlideModal } from "react-native-slide-modal";
-import { Loading } from "./components/Loading";
 
+import { Loading } from "./components/Loading";
 import { useWS } from "./components/WebSocketContext";
 
 const Home: React.FC = () => {
@@ -10,7 +16,9 @@ const Home: React.FC = () => {
    const [loading, setLoading] = useState(true);
    const [gameData, setGameData] = useState<{
       firstConnection: boolean;
+      completed: number;
    } | null>(null);
+   const [floor, setFloor] = useState(1);
 
    useEffect(() => {
       const getData = async () => {
@@ -47,8 +55,47 @@ const Home: React.FC = () => {
          modalType="iOS Form Sheet"
          modalVisible={gameData?.firstConnection!}
          screenContainer={
-            <SafeAreaView>
-               <Text>Reddam House Go</Text>
+            <SafeAreaView className="h-full w-full">
+               <View className="p-2">
+                  <Text className="text-lg">
+                     Total Points:{" "}
+                     <Text className="font-bold text-blue-500">
+                        {gameData?.completed}
+                     </Text>
+                  </Text>
+                  <View className="flex-row mx-auto">
+                     <TouchableOpacity
+                        className={`px-2 py-1 ${
+                           floor === 1 ? "bg-gray-100" : "bg-blue-500"
+                        } rounded-l-md`}
+                        disabled={floor === 1}
+                        onPress={() => setFloor(1)}
+                     >
+                        <Text
+                           className={`text-lg ${
+                              floor === 2 ? "text-white" : "text-gray-300"
+                           }`}
+                        >
+                           Floor 1
+                        </Text>
+                     </TouchableOpacity>
+                     <TouchableOpacity
+                        className={`px-2 py-1 ${
+                           floor === 2 ? "bg-gray-100" : "bg-blue-500"
+                        } rounded-r-md`}
+                        disabled={floor === 2}
+                        onPress={() => setFloor(2)}
+                     >
+                        <Text
+                           className={`text-lg ${
+                              floor === 1 ? "text-white" : "text-gray-300"
+                           }`}
+                        >
+                           Floor 2
+                        </Text>
+                     </TouchableOpacity>
+                  </View>
+               </View>
             </SafeAreaView>
          }
          modalContainer={
