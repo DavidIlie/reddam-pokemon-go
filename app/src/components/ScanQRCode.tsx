@@ -56,7 +56,7 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
 
    return (
       <SafeAreaView>
-         <Text className="text-2xl font-medium text-center">{title}</Text>
+         <Text className="text-2xl font-medium text-center mb-2">{title}</Text>
          <Camera
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={{ height, width }}

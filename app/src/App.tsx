@@ -21,12 +21,22 @@ const Home: React.FC = () => {
       firstConnection: boolean;
       completed: number;
    } | null>(null);
+   const [markers, setMarkers] = useState<
+      {
+         left: number;
+         top: number;
+         right: number;
+         bottom: number;
+         markerId: string;
+      }[]
+   >([]);
    const [floor, setFloor] = useState(1);
 
    useEffect(() => {
       const getData = async () => {
          setLoading(true);
          ws.sendJsonMessage({ action: "getGameData" });
+         ws.sendJsonMessage({ action: "getMarkers" });
       };
 
       getData();
@@ -40,6 +50,8 @@ const Home: React.FC = () => {
                setGameData(parsed.res);
                setLoading(false);
                break;
+            case "getMarkers":
+               setMarkers(parsed.res);
             default:
                break;
          }
@@ -112,11 +124,14 @@ const Home: React.FC = () => {
                               ],
                            }}
                         >
-                           <Marker
-                              top={170}
-                              left={25}
-                              markerId="asudbiaisubd"
-                           />
+                           {markers?.map((marker, index) => (
+                              <Marker
+                                 top={marker.top}
+                                 left={marker.left}
+                                 markerId={marker.markerId}
+                                 key={index}
+                              />
+                           ))}
                            <Animated.Image
                               source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
                               style={{

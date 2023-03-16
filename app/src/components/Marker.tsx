@@ -4,14 +4,19 @@ import * as Animatable from "react-native-animatable";
 import { AntDesign } from "@expo/vector-icons";
 
 import ScanQRCode from "./ScanQRCode";
+import { useWS } from "./WebSocketContext";
 
 const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
    top,
    left,
    markerId,
 }) => {
+   const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
    const [scannedUUID, setScannedUUID] = useState();
+
+   const handleScannedQRCode = (data: string) => {};
+
    return (
       <>
          <Animatable.View
@@ -38,7 +43,7 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
                style={{ backgroundColor: "rgba(00, 00, 00, 0.6)" }}
             >
                <View className="bg-white rounded-md py-2 px-4 border-2 border-gray-300">
-                  <View className="absolute right-0 p-2">
+                  <View className="absolute right-0 p-2 z-50">
                      <AntDesign
                         name="close"
                         size={24}
@@ -47,13 +52,21 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
                      />
                   </View>
                   <ScanQRCode
-                     onSuccess={(data) => {
-                        console.log(data);
-                     }}
+                     onSuccess={handleScannedQRCode}
                      title="Scan Room"
                      width={300}
                      height={300}
                   />
+                  {__DEV__ && (
+                     <TouchableOpacity
+                        onPress={() => handleScannedQRCode(markerId)}
+                        className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
+                     >
+                        <Text className="text-white text-lg font-medium">
+                           Assume Scanned (dev)
+                        </Text>
+                     </TouchableOpacity>
+                  )}
                </View>
             </View>
          </Modal>
