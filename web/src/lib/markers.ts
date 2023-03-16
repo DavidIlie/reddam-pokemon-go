@@ -133,13 +133,6 @@ export const markers = [
     roomName: "S109",
   },
   {
-    top: 94,
-    left: 285,
-    bottom: 0,
-    right: 0,
-    roomName: "S109a",
-  },
-  {
     top: 200,
     left: 251,
     bottom: 0,
