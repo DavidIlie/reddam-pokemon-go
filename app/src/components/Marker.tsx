@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View, Text, Modal } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { SlideModal } from "react-native-slide-modal";
+import { AntDesign } from "@expo/vector-icons";
+
+import ScanQRCode from "./ScanQRCode";
 
 const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
    top,
@@ -9,6 +11,7 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
    markerId,
 }) => {
    const [openScanModal, setOpenScanModal] = useState(false);
+   const [scannedUUID, setScannedUUID] = useState();
    return (
       <>
          <Animatable.View
@@ -24,7 +27,6 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
             />
          </Animatable.View>
          <Modal
-            animationType="slide"
             transparent={true}
             visible={openScanModal}
             onRequestClose={() => {
@@ -36,7 +38,22 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
                style={{ backgroundColor: "rgba(00, 00, 00, 0.6)" }}
             >
                <View className="bg-white rounded-md py-2 px-4 border-2 border-gray-300">
-                  <Text className="text-black text-3xl">Scan</Text>
+                  <View className="absolute right-0 p-2">
+                     <AntDesign
+                        name="close"
+                        size={24}
+                        color="black"
+                        onPress={() => setOpenScanModal(false)}
+                     />
+                  </View>
+                  <ScanQRCode
+                     onSuccess={(data) => {
+                        console.log(data);
+                     }}
+                     title="Scan Room"
+                     width={300}
+                     height={300}
+                  />
                </View>
             </View>
          </Modal>

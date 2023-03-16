@@ -34,16 +34,18 @@ const AppUnderscore: React.FC = () => {
       <SafeAreaView>
          {needsToAuthQRCode ? (
             toggleScan ? (
-               <ScanQRCode
-                  onSuccess={async (data) => {
-                     await SecureStore.setItemAsync("uuid", data);
-                     setUuid(data);
-                     setToggleScan(false);
-                     setNeedsToAuthQRCode(false);
-                  }}
-                  onFail={() => console.log("error")}
-                  title="Scan QR Code to Log In"
-               />
+               <View className="mt-12">
+                  <ScanQRCode
+                     onSuccess={async (data) => {
+                        await SecureStore.setItemAsync("uuid", data);
+                        setUuid(data);
+                        setToggleScan(false);
+                        setNeedsToAuthQRCode(false);
+                     }}
+                     onFail={() => console.log("error")}
+                     title="Scan QR Code to Log In"
+                  />
+               </View>
             ) : (
                <View className="flex items-center justify-center h-full">
                   <Text className="text-2xl font-medium">Reddam House Go</Text>

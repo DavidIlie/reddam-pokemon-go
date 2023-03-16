@@ -5,14 +5,18 @@ import { Camera, CameraType } from "expo-camera";
 
 interface ScanQRCodeProps {
    onSuccess: (data: string) => void;
-   onFail: () => void;
+   onFail?: () => void;
    title?: string;
+   width?: number;
+   height?: number;
 }
 
 const ScanQRCode: React.FC<ScanQRCodeProps> = ({
    onSuccess,
    onFail,
    title = "Scan QR Code",
+   width = 500,
+   height = 500,
 }) => {
    const [hasPermission, setHasPermission] = useState<boolean | null>(null);
    const [scanned, setScanned] = useState(false);
@@ -51,11 +55,11 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
    }
 
    return (
-      <SafeAreaView className="mt-12">
+      <SafeAreaView>
          <Text className="text-2xl font-medium text-center">{title}</Text>
          <Camera
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            style={{ height: 500, width: 500 }}
+            style={{ height, width }}
             type={type}
          />
          <TouchableOpacity
