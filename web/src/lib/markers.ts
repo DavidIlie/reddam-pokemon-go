@@ -1,4 +1,12 @@
-export const markers = [
+interface Room {
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+  roomName: string;
+}
+
+export const markers: Room[] = [
   {
     top: 168,
     left: 25,
@@ -175,3 +183,27 @@ export const markers = [
     roomName: "A3",
   },
 ];
+
+export const getNonAdjacentRooms = (rooms: Room[]): Room[] => {
+  const selectedRooms: Room[] = [];
+
+  while (selectedRooms.length < 6) {
+    const candidateRoom = rooms[Math.floor(Math.random() * rooms.length)];
+    if (
+      !selectedRooms.includes(candidateRoom) &&
+      !selectedRooms.some((room) => areAdjacent(room, candidateRoom))
+    ) {
+      selectedRooms.push(candidateRoom);
+    }
+  }
+
+  return selectedRooms;
+};
+
+const areAdjacent = (room1: Room, room2: Room): boolean => {
+  const horizontalDistance = Math.abs(room1.left - room2.left);
+  const verticalDistance = Math.abs(room1.top - room2.top);
+  const minDistance = 50;
+
+  return horizontalDistance < minDistance && verticalDistance < minDistance;
+};

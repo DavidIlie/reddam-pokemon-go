@@ -2,7 +2,7 @@ import express from "express";
 import expressWs from "express-ws";
 
 import { prisma } from "./lib/db";
-import { markers } from "./lib/markers";
+import { getNonAdjacentRooms, markers } from "./lib/markers";
 import { checkAuth } from "./pages/api/admin/check-auth";
 
 const server = express();
@@ -42,7 +42,7 @@ expressWsInstance.ws("/ws", async (ws, req) => {
         });
         break;
       case "getMarkers":
-        sendWSMessage(markers);
+        sendWSMessage(getNonAdjacentRooms(markers));
         break;
       default:
         break;
