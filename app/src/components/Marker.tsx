@@ -11,8 +11,8 @@ const Marker: React.FC<{
    left: number;
    right: number;
    bottom: number;
-   markerId: string;
-}> = ({ top, bottom, left, right, markerId }) => {
+   roomName: string;
+}> = ({ top, bottom, left, right, roomName }) => {
    const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
    const [scannedUUID, setScannedUUID] = useState();
@@ -30,8 +30,10 @@ const Marker: React.FC<{
          >
             <TouchableOpacity
                onPress={() => setOpenScanModal(true)}
-               className="absolute rounded-full p-2 bg-red-500 opacity-50"
-            />
+               className="absolute rounded-full px-0.5 py-1.5 bg-red-500 opacity-50"
+            >
+               <Text style={{ fontSize: 6 }}>{roomName}</Text>
+            </TouchableOpacity>
          </Animatable.View>
          <Modal
             transparent={true}
@@ -55,13 +57,13 @@ const Marker: React.FC<{
                   </View>
                   <ScanQRCode
                      onSuccess={handleScannedQRCode}
-                     title="Scan Room"
+                     title={`Scan ${roomName}`}
                      width={300}
                      height={300}
                   />
                   {__DEV__ && (
                      <TouchableOpacity
-                        onPress={() => handleScannedQRCode(markerId)}
+                        onPress={() => handleScannedQRCode(roomName)}
                         className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
                      >
                         <Text className="text-white text-lg font-medium">

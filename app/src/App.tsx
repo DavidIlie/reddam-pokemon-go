@@ -28,7 +28,7 @@ const Home: React.FC = () => {
          top: number;
          right: number;
          bottom: number;
-         markerId: string;
+         roomName: string;
       }[]
    >([]);
    const [floor, setFloor] = useState(1);
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
       };
 
       getData();
-   }, [ws.readyState]);
+   }, []);
 
    useEffect(() => {
       if (ws.lastMessage.data) {
