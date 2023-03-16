@@ -28,7 +28,7 @@ expressWsInstance.ws("/ws", async (ws, req) => {
   ws.on("message", async (msg: string) => {
     console.log(msg);
 
-    let { action, id } = JSON.parse(msg);
+    let { action } = JSON.parse(msg);
 
     const sendWSMessage = (s: {}) =>
       ws.send(JSON.stringify({ action, res: s }));
@@ -41,7 +41,6 @@ expressWsInstance.ws("/ws", async (ws, req) => {
           data: { firstConnection: false },
         });
         break;
-
       case "getMarkers":
         sendWSMessage(markers);
         break;

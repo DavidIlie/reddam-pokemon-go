@@ -6,11 +6,13 @@ import { AntDesign } from "@expo/vector-icons";
 import ScanQRCode from "./ScanQRCode";
 import { useWS } from "./WebSocketContext";
 
-const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
-   top,
-   left,
-   markerId,
-}) => {
+const Marker: React.FC<{
+   top: number;
+   left: number;
+   right: number;
+   bottom: number;
+   markerId: string;
+}> = ({ top, bottom, left, right, markerId }) => {
    const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
    const [scannedUUID, setScannedUUID] = useState();
@@ -24,7 +26,7 @@ const Marker: React.FC<{ top: number; left: number; markerId: string }> = ({
             easing="ease-out"
             iterationCount="infinite"
             className="absolute z-50"
-            style={{ top, left }}
+            style={top === 0 && left === 0 ? { bottom, right } : { top, left }}
          >
             <TouchableOpacity
                onPress={() => setOpenScanModal(true)}

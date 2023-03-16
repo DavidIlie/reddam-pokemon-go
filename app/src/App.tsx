@@ -8,6 +8,7 @@ import {
    Animated,
 } from "react-native";
 import { SlideModal } from "react-native-slide-modal";
+import { ReadyState } from "react-native-use-websocket";
 
 import { Loading } from "./components/Loading";
 import { useWS } from "./components/WebSocketContext";
@@ -34,13 +35,17 @@ const Home: React.FC = () => {
 
    useEffect(() => {
       const getData = async () => {
-         setLoading(true);
-         ws.sendJsonMessage({ action: "getGameData" });
-         ws.sendJsonMessage({ action: "getMarkers" });
+         if (ws.readyState === ReadyState.OPEN) {
+            setTimeout(() => {
+               setLoading(true);
+               ws.sendJsonMessage({ action: "getGameData" });
+               ws.sendJsonMessage({ action: "getMarkers" });
+            }, 200);
+         }
       };
 
       getData();
-   }, []);
+   }, [ws.readyState]);
 
    useEffect(() => {
       if (ws.lastMessage.data) {
@@ -125,12 +130,7 @@ const Home: React.FC = () => {
                            }}
                         >
                            {markers?.map((marker, index) => (
-                              <Marker
-                                 top={marker.top}
-                                 left={marker.left}
-                                 markerId={marker.markerId}
-                                 key={index}
-                              />
+                              <Marker {...marker} key={index} />
                            ))}
                            <Animated.Image
                               source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
