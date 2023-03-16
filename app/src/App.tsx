@@ -12,6 +12,7 @@ import { SlideModal } from "react-native-slide-modal";
 import { Loading } from "./components/Loading";
 import { useWS } from "./components/WebSocketContext";
 import PinchPan from "./components/PinchPan";
+import Marker from "./components/Marker";
 
 const Home: React.FC = () => {
    const { ws } = useWS();
@@ -56,7 +57,7 @@ const Home: React.FC = () => {
          modalType="iOS Form Sheet"
          modalVisible={gameData?.firstConnection!}
          screenContainer={
-            <SafeAreaView className="h-full w-full">
+            <SafeAreaView className="h-full w-full bg-white">
                <View className="bg-white z-50 border-b pb-1 border-gray-300">
                   <View className="p-2">
                      <Text className="text-lg text-center">
@@ -102,20 +103,30 @@ const Home: React.FC = () => {
                <View>
                   <PinchPan>
                      {({ scale, x, y }) => (
-                        <Animated.Image
-                           source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
+                        <Animated.View
                            style={{
-                              width: "80%",
-                              height: "80%",
-                              aspectRatio: 1,
-                              resizeMode: "contain",
                               transform: [
                                  { scale },
                                  { translateX: x },
                                  { translateY: y },
                               ],
                            }}
-                        />
+                        >
+                           <Marker
+                              top={170}
+                              left={25}
+                              markerId="asudbiaisubd"
+                           />
+                           <Animated.Image
+                              source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
+                              style={{
+                                 width: "80%",
+                                 height: "80%",
+                                 aspectRatio: 1,
+                                 resizeMode: "contain",
+                              }}
+                           />
+                        </Animated.View>
                      )}
                   </PinchPan>
                </View>

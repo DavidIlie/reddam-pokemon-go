@@ -21,6 +21,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-native: 0.71.3
+  react-native-animatable: ^1.3.3
   react-native-camera: ^4.2.1
   react-native-gesture-handler: ~2.9.0
   react-native-image-pan-zoom: ^2.1.12
@@ -51,6 +52,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-native: 0.71.3_raab37p3ikkajcivlo24zcd7ie
+  react-native-animatable: 1.3.3
   react-native-camera: 4.2.1
   react-native-gesture-handler: 2.9.0_yqouayos4dnow7nnkhah4yzuzq
   react-native-image-pan-zoom: 2.1.12_yqouayos4dnow7nnkhah4yzuzq
@@ -6375,6 +6377,12 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: false
+
+  /react-native-animatable/1.3.3:
+    resolution: {integrity: sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==}
+    dependencies:
+      prop-types: 15.8.1
     dev: false
 
   /react-native-camera/4.2.1:
