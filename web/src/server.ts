@@ -30,7 +30,7 @@ expressWsInstance.ws("/ws", async (ws, req) => {
   if (connection.firstConnection) {
     const rooms = getNonAdjacentRooms(markers, prevMarkers);
     connection = await prisma.connection.update({
-      where: { id: connection.id },
+      where: { id: connection!.id },
       data: { rooms: rooms.map((s) => s.roomName) },
     });
   }
@@ -60,10 +60,17 @@ expressWsInstance.ws("/ws", async (ws, req) => {
         break;
       case "reportFound":
         let { room } = JSON.parse(msg);
-        if (connection?.foundRooms.includes(room))
+        if (connection?.foundRooms.includes(room)) {
+          ws.send(JSON.stringify({ action: "getGameData", res: connection! }));
           return ws.send(
-            JSON.stringify({ action: "getGameData", res: connection! })
+            JSON.stringify({
+              action: "getMarkers",
+              res: markers.filter((s) =>
+                connection!.rooms.includes(s.roomName)
+              ),
+            })
           );
+        }
         if (connection?.rooms.includes(room)) {
           // TODO: announce other players that someone has found a room
           connection = await prisma.connection.update({
@@ -73,8 +80,24 @@ expressWsInstance.ws("/ws", async (ws, req) => {
               foundRooms: [...connection.foundRooms, room],
             },
           });
+          if (connection.rooms.length < 4) {
+            const rooms = getNonAdjacentRooms(
+              markers,
+              markers.filter((s) => connection!.foundRooms.includes(s.roomName))
+            );
+            connection = await prisma.connection.update({
+              where: { id: connection!.id },
+              data: { rooms: rooms.map((s) => s.roomName) },
+            });
+          }
+          ws.send(JSON.stringify({ action: "getGameData", res: connection! }));
           return ws.send(
-            JSON.stringify({ action: "getGameData", res: connection! })
+            JSON.stringify({
+              action: "getMarkers",
+              res: markers.filter((s) =>
+                connection!.rooms.includes(s.roomName)
+              ),
+            })
           );
         }
         break;

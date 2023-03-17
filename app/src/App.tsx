@@ -153,15 +153,14 @@ const Home: React.FC = () => {
             </SafeAreaView>
          }
          modalContainer={
-            <View className="px-4 mt-12">
+            <View className="px-4 mt-24 w-full">
                <Text className="text-3xl font-medium text-center">
                   Welcome!
                </Text>
-               <Text className="text-center mt-2">
-                  You have been given different points around the school, try
-                  and find them...
+               <Text className="text-center text-lg mt-2">
+                  Try and find as many points around Reddam...
                </Text>
-               <Text className="text-center mt-2">
+               <Text className="text-center text-xl">
                   The team which gets the most{" "}
                   <Text className="text-blue-500 font-bold">points</Text> in 30
                   minutes,{" "}
