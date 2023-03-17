@@ -4,6 +4,8 @@ RUN npm i -g pnpm
 COPY . .
 WORKDIR /web
 
+ENV DATABASE_URL "postgresql://postgres:MshlQCXOk1R3OIMR6OJL@containers-us-west-89.railway.app:6034/reddam-pokemon-go"
+
 RUN pnpm install
 RUN pnpm prepare:db
 
