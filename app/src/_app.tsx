@@ -35,6 +35,7 @@ const AppUnderscore: React.FC = () => {
    if (loading) return <Loading />;
 
    const handleQRScan = async (data: string) => {
+      if (data === "") return;
       await SecureStore.setItemAsync("uuid", data);
       setUuid(data);
       setToggleScan(false);
