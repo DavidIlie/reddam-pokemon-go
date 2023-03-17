@@ -37,10 +37,10 @@ export const AuthWSWrapper: React.FC<{
    if (ws.readyState === ReadyState.CLOSED)
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
-            <Text className="font-bold text-3xl text-red-500">
+            <Text className="font-bold text-4xl text-red-500">
                No Connection
             </Text>
-            <Text>Please connect to Wi-Fi</Text>
+            <Text className="text-lg">Please connect to Wi-Fi</Text>
          </SafeAreaView>
       );
 

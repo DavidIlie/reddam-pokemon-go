@@ -57,6 +57,16 @@ const Home: React.FC = () => {
 
    if (loading) return <Loading />;
 
+   if (!gameData?.gameStarted)
+      return (
+         <SafeAreaView className="flex justify-center items-center h-full">
+            <Text className="font-bold text-4xl text-red-500">
+               Game Has Not Started
+            </Text>
+            <Text className="text-lg">Please wait for it to start</Text>
+         </SafeAreaView>
+      );
+
    const interactionSlideModal = () => {
       ws.sendJsonMessage({ action: "getGameData" });
    };
