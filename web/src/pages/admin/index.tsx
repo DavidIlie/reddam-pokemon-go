@@ -20,6 +20,8 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
   const [teamname, setTeamname] = useState("");
   const [players, setPlayers] = useState("");
 
+  const [endTime, setEndTime] = useState<string>("");
+
   const inputStyle =
     "block bg-gray-100 border-2 border-gray-200 p-2 rounded-md w-full";
   const buttonStyle =
@@ -76,7 +78,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
             value={players}
             onChange={(e) => setPlayers(e.target.value)}
           />
-          <div className="my-[0.75rem]" />
+          <div className="my-[2rem]" />
           <button className={buttonStyle} type="submit">
             create qr code for login
           </button>
@@ -84,24 +86,79 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
         {data && (
           <div>
             <h1 className="mb-2 text-xl font-medium">game manager</h1>
+            {data?.gameState?.status !== "NOT_STARTED" && (
+              <>
+                <button
+                  className={buttonStyle}
+                  onClick={async () => {
+                    const r = await fetch("/api/admin/game-state", {
+                      method: "POST",
+                      credentials: "include",
+                      body: JSON.stringify({
+                        endTime: null,
+                        status: "NOT_STARTED",
+                      }),
+                    });
+                    if (r.status !== 200) alert("check console");
+                    reload();
+                  }}
+                >
+                  reset
+                </button>
+                <div className="my-1" />
+              </>
+            )}
             <button
               className={buttonStyle}
-              onClick={async () => {}}
+              onClick={async () => {
+                const r = await fetch("/api/admin/game-state", {
+                  method: "POST",
+                  credentials: "include",
+                  body: JSON.stringify({
+                    endTime: data?.gameState.endTime,
+                    status:
+                      data?.gameState.status === "STARTED"
+                        ? "FINISHED"
+                        : "STARTED",
+                  }),
+                });
+                if (r.status !== 200) alert("check console");
+                reload();
+              }}
               disabled={
                 data?.connections.length === 0 ||
                 data?.gameState?.endTime === null
               }
             >
-              {data?.gameState?.gameStarted ? "end game" : "start game"}
+              {data?.gameState?.status === "STARTED"
+                ? "end game"
+                : "start game"}
             </button>
             <div className="my-1" />
+            <h1>end time</h1>
             <div className="flex items-center gap-1">
               <input
-                className={inputStyle}
-                placeholder="End Time"
                 type="datetime-local"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
               />
-              <button className={buttonStyle} onClick={async () => {}}>
+              <button
+                className={buttonStyle}
+                onClick={async () => {
+                  const r = await fetch("/api/admin/game-state", {
+                    method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({
+                      endTime: new Date(endTime),
+                      status: "NOT_STARTED",
+                    }),
+                  });
+                  if (r.status !== 200) alert("check console");
+                  setEndTime("");
+                  reload();
+                }}
+                disabled={endTime === ""}
+              >
                 configure
               </button>
             </div>
@@ -113,7 +170,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
                 push("/admin/rooms");
               }}
             >
-              get room qr
+              get room qr codes
             </button>
           </div>
         )}

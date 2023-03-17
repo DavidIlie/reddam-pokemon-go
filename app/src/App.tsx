@@ -22,7 +22,7 @@ const Home: React.FC = () => {
    const [gameData, setGameData] = useState<{
       firstConnection: boolean;
       foundRooms: string[];
-      gameStarted: boolean;
+      status: "NOT_STARTED" | "STARTED" | "FINISHED";
       endTime?: Date;
       markers: { left: number; top: number; roomName: string }[];
    } | null>(null);
@@ -49,21 +49,49 @@ const Home: React.FC = () => {
                setGameData(parsed.res);
                setLoading(false);
                break;
+            case "askForGameData":
+               ws.sendJsonMessage({ action: "getGameData" });
+               break;
             default:
                break;
          }
       }
    }, [ws.lastMessage]);
 
+   const [timeRemaining, setTimeRemaining] = useState("");
+
+   useEffect(() => {
+      if (gameData?.endTime) {
+         const intervalId = setInterval(() => {
+            const timeDifference =
+               new Date(gameData?.endTime!).getTime() - new Date().getTime();
+            const minutes = Math.floor(timeDifference / 60000);
+            const seconds = Math.floor(
+               (timeDifference - minutes * 60000) / 1000
+            );
+            setTimeRemaining(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+         }, 1000);
+         return () => clearInterval(intervalId);
+      }
+   }, [gameData?.endTime]);
+
    if (loading) return <Loading />;
 
-   if (!gameData?.gameStarted)
+   if (gameData?.status === "NOT_STARTED")
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">
                Game Has Not Started
             </Text>
             <Text className="text-lg">Please wait for it to start</Text>
+         </SafeAreaView>
+      );
+
+   if (gameData?.status === "FINISHED")
+      return (
+         <SafeAreaView className="flex justify-center items-center h-full">
+            <Text className="font-bold text-4xl text-red-500">Finished</Text>
+            <Text className="text-lg">Go back to class!</Text>
          </SafeAreaView>
       );
 
@@ -79,7 +107,7 @@ const Home: React.FC = () => {
                <View className="bg-white z-50 border-b pb-1 border-gray-300">
                   <View className="p-2">
                      <Text className="text-lg text-center">
-                        Time Left: 0:00 Minutes
+                        Time Left: {timeRemaining}
                      </Text>
                      <Text className="text-lg text-center mt-1">
                         Total Points:{" "}
