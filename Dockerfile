@@ -1,4 +1,4 @@
-FROM node:16.13.0-alpine AS deps
+FROM node:18.8.0-alpine AS deps
 RUN apk add --no-cache libc6-compat
 RUN npm i -g pnpm
 COPY . .
