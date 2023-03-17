@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import QRCode from "react-qr-code";
 import useSWR from "swr";
-import { Connection } from "@prisma/client";
+import { Connection, GameState } from "@prisma/client";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -23,21 +23,25 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
   const inputStyle =
     "block bg-gray-100 border-2 border-gray-200 p-2 rounded-md w-full";
   const buttonStyle =
-    "w-full rounded-md border-2 border-blue-600 bg-blue-500 px-4 py-2 text-white duration-150 hover:border-blue-700 hover:bg-blue-600";
+    "disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 disabled:hover:bg-gray-200 w-full rounded-md border-2 border-blue-600 bg-blue-500 px-4 py-2 text-white duration-150 hover:border-blue-700 hover:bg-blue-600";
 
   const {
     data,
     isLoading,
     mutate: reload,
-  } = useSWR<Connection[]>("/api/admin/connections", fetcher, {
-    refreshInterval: 5000,
-  });
+  } = useSWR<{ connections: Connection[]; gameState: GameState }>(
+    "/api/admin/connections",
+    fetcher,
+    {
+      refreshInterval: 5000,
+    }
+  );
 
   const [revealCode, setRevealCode] = useState<null | string>(null);
 
   return (
     <div className="px-4 py-2">
-      <div className="flex gap-4">
+      <div className="flex items-center gap-6">
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -64,7 +68,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
             value={teamname}
             onChange={(e) => setTeamname(e.target.value)}
           />
-          <div className="my-1" />
+          <div className="my-[0.75rem]" />
           <input
             className={inputStyle}
             placeholder="Players"
@@ -72,25 +76,51 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
             value={players}
             onChange={(e) => setPlayers(e.target.value)}
           />
-          <div className="my-1" />
+          <div className="my-[0.75rem]" />
           <button className={buttonStyle} type="submit">
             create qr code for login
           </button>
-          <div className="my-1" />
-          <button
-            className={buttonStyle}
-            type="button"
-            onClick={() => {
-              push("/admin/rooms");
-            }}
-          >
-            get room qr
-          </button>
         </form>
+        {data && (
+          <div>
+            <h1 className="mb-2 text-xl font-medium">game manager</h1>
+            <button
+              className={buttonStyle}
+              onClick={async () => {}}
+              disabled={
+                data?.connections.length === 0 ||
+                data?.gameState?.endTime === null
+              }
+            >
+              {data?.gameState?.gameStarted ? "end game" : "start game"}
+            </button>
+            <div className="my-1" />
+            <div className="flex items-center gap-1">
+              <input
+                className={inputStyle}
+                placeholder="End Time"
+                type="datetime-local"
+              />
+              <button className={buttonStyle} onClick={async () => {}}>
+                configure
+              </button>
+            </div>
+            <div className="my-1" />
+            <button
+              className={buttonStyle}
+              type="button"
+              onClick={() => {
+                push("/admin/rooms");
+              }}
+            >
+              get room qr
+            </button>
+          </div>
+        )}
       </div>
       {isLoading && !data && <div>Loading data...</div>}
       <div className="mt-2 grid grid-cols-4 justify-evenly gap-4">
-        {data?.map((connection) => (
+        {data?.connections?.map((connection) => (
           <div
             key={connection.id}
             className="mb-2 w-min select-none text-center"
