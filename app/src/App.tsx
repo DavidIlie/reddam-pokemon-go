@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SlideModal } from "react-native-slide-modal";
 import { ReadyState } from "react-native-use-websocket";
+import { useToast } from "react-native-toast-notifications";
 
 import { Loading } from "./components/Loading";
 import { useWS } from "./components/WebSocketContext";
@@ -17,6 +18,7 @@ import Marker from "./components/Marker";
 import CustomButton from "./components/CustomButton";
 
 const Home: React.FC = () => {
+   const toast = useToast();
    const { ws } = useWS();
    const [loading, setLoading] = useState(true);
    const [gameData, setGameData] = useState<{
@@ -49,6 +51,9 @@ const Home: React.FC = () => {
                setGameData(parsed.res);
                setLoading(false);
                break;
+            case "someoneGotPoint":
+               toast.show(parsed.res, { type: "danger" });
+               break;
             case "askForGameData":
                ws.sendJsonMessage({ action: "getGameData" });
                break;
@@ -58,30 +63,13 @@ const Home: React.FC = () => {
       }
    }, [ws.lastMessage]);
 
-   const [timeRemaining, setTimeRemaining] = useState("");
-
-   useEffect(() => {
-      if (gameData?.endTime) {
-         const intervalId = setInterval(() => {
-            const timeDifference =
-               new Date(gameData?.endTime!).getTime() - new Date().getTime();
-            const minutes = Math.floor(timeDifference / 60000);
-            const seconds = Math.floor(
-               (timeDifference - minutes * 60000) / 1000
-            );
-            setTimeRemaining(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
-         }, 1000);
-         return () => clearInterval(intervalId);
-      }
-   }, [gameData?.endTime]);
-
    if (loading) return <Loading />;
 
    if (gameData?.status === "NOT_STARTED")
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">
-               Game Has Not Started
+               Game Has Not Started 🙄
             </Text>
             <Text className="text-lg">Please wait for it to start</Text>
          </SafeAreaView>
@@ -90,7 +78,7 @@ const Home: React.FC = () => {
    if (gameData?.status === "FINISHED")
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
-            <Text className="font-bold text-4xl text-red-500">Finished</Text>
+            <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
             <Text className="text-lg">Go back to class!</Text>
          </SafeAreaView>
       );
@@ -106,9 +94,7 @@ const Home: React.FC = () => {
             <SafeAreaView className="h-full w-full bg-white">
                <View className="bg-white z-50 border-b pb-1 border-gray-300">
                   <View className="p-2">
-                     <Text className="text-lg text-center">
-                        Time Left: {timeRemaining}
-                     </Text>
+                     <Text className="text-lg text-center">Time Left:</Text>
                      <Text className="text-lg text-center mt-1">
                         Total Points:{" "}
                         <Text className="font-bold text-blue-500">

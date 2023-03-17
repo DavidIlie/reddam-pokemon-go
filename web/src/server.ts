@@ -90,7 +90,21 @@ const app = async () => {
             break;
           }
           if (connection?.rooms.includes(room)) {
-            // TODO: announce other players that someone has found a room
+            await Promise.all(
+              connections.map(async (c) => {
+                if (c.connectionId !== connection?.connectionId) {
+                  const bigC = await prisma.connection.findFirst({
+                    where: { connectionId: c.connectionId },
+                  });
+                  c.ws.send(
+                    JSON.stringify({
+                      action: "someoneGotPoint",
+                      res: `Team ${bigC!.name} has scored a point!`,
+                    })
+                  );
+                }
+              })
+            );
             connection = await prisma.connection.update({
               where: { id: connection.id },
               data: {

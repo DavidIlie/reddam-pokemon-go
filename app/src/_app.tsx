@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, SafeAreaView, Text, View } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import Dialog from "react-native-dialog";
+import { ToastProvider } from "react-native-toast-notifications";
 
 import ScanQRCode from "./components/ScanQRCode";
 
@@ -87,7 +88,9 @@ const AppUnderscore: React.FC = () => {
             )
          ) : (
             <AuthWSWrapper uuid={uuid}>
-               <App />
+               <ToastProvider offsetBottom={100} textStyle={{ fontSize: 20 }}>
+                  <App />
+               </ToastProvider>
             </AuthWSWrapper>
          )}
       </SafeAreaView>
