@@ -10,4 +10,4 @@ RUN pnpm install
 RUN pnpm prepare:db
 
 EXPOSE 3001
-CMD ["pnpm", "start:web"]
+CMD ["pnpm", "start:ws"]
