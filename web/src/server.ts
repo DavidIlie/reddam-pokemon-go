@@ -2,7 +2,7 @@ import express from "express";
 import expressWs from "express-ws";
 
 import { prisma } from "./lib/db";
-import { getNonAdjacentRooms, markers } from "./lib/markers";
+import { getNonAdjacentRooms, markers, Room } from "./lib/markers";
 import { checkAuth } from "./pages/api/admin/check-auth";
 
 const server = express();
@@ -12,6 +12,8 @@ export let connections = [] as {
   ws: WebSocket;
   connectionId: string;
 }[];
+
+let prevMarkers = [] as Room[];
 
 expressWsInstance.ws("/ws", async (ws, req) => {
   const { auth } = req.query as { auth: string };
@@ -24,6 +26,14 @@ expressWsInstance.ws("/ws", async (ws, req) => {
 
   console.log(`CONNECTION: ${connection.name}`);
   connections.push({ ws: ws as any, connectionId: connection.connectionId! });
+
+  if (connection.firstConnection) {
+    const rooms = getNonAdjacentRooms(markers, prevMarkers);
+    connection = await prisma.connection.update({
+      where: { id: connection.id },
+      data: { rooms: rooms.map((s) => s.roomName) },
+    });
+  }
 
   ws.on("message", async (msg: string) => {
     console.log(msg);
@@ -42,7 +52,11 @@ expressWsInstance.ws("/ws", async (ws, req) => {
         });
         break;
       case "getMarkers":
-        sendWSMessage(getNonAdjacentRooms(markers));
+        const connectionRooms = connection!.rooms;
+        let markersFiltered = markers.filter((s) =>
+          connectionRooms.includes(s.roomName)
+        );
+        sendWSMessage(markersFiltered);
         break;
       default:
         break;

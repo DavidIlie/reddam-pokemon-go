@@ -12,6 +12,7 @@ model Connection {
   name            String
   players         String[]
   connectionId    String?  @default(uuid())
-  completed       Int?     @default(0)
   firstConnection Boolean  @default(true)
+  foundRooms String[]
+  rooms String[]
 }

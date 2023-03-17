@@ -14,13 +14,14 @@ import { Loading } from "./components/Loading";
 import { useWS } from "./components/WebSocketContext";
 import PinchPan from "./components/PinchPan";
 import Marker from "./components/Marker";
+import CustomButton from "./components/CustomButton";
 
 const Home: React.FC = () => {
    const { ws } = useWS();
    const [loading, setLoading] = useState(true);
    const [gameData, setGameData] = useState<{
       firstConnection: boolean;
-      completed: number;
+      foundRooms: string[];
    } | null>(null);
    const [markers, setMarkers] = useState<
       {
@@ -72,15 +73,17 @@ const Home: React.FC = () => {
    return (
       <SlideModal
          modalType="iOS Form Sheet"
-         modalVisible={gameData?.firstConnection!}
          screenContainer={
             <SafeAreaView className="h-full w-full bg-white">
                <View className="bg-white z-50 border-b pb-1 border-gray-300">
                   <View className="p-2">
                      <Text className="text-lg text-center">
+                        Time Left: 0:00 Minutes
+                     </Text>
+                     <Text className="text-lg text-center mt-1">
                         Total Points:{" "}
                         <Text className="font-bold text-blue-500">
-                           {gameData?.completed}
+                           {gameData?.foundRooms.length}
                         </Text>
                      </Text>
                      <View className="flex-row mx-auto mt-2">
@@ -117,7 +120,7 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               <View>
+               <View className="h-[80%]">
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View
@@ -129,18 +132,20 @@ const Home: React.FC = () => {
                               ],
                            }}
                         >
-                           {markers?.map((marker, index) => (
-                              <Marker {...marker} key={index} />
-                           ))}
-                           <Animated.Image
-                              source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
-                              style={{
-                                 width: "80%",
-                                 height: "80%",
-                                 aspectRatio: 1,
-                                 resizeMode: "contain",
-                              }}
-                           />
+                           <View>
+                              {markers?.map((marker, index) => (
+                                 <Marker {...marker} key={index} />
+                              ))}
+                              <Animated.Image
+                                 source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
+                                 style={{
+                                    width: "80%",
+                                    height: "80%",
+                                    aspectRatio: 1,
+                                    resizeMode: "contain",
+                                 }}
+                              />
+                           </View>
                         </Animated.View>
                      )}
                   </PinchPan>
@@ -148,7 +153,7 @@ const Home: React.FC = () => {
             </SafeAreaView>
          }
          modalContainer={
-            <View className="px-4">
+            <View className="px-4 mt-12">
                <Text className="text-3xl font-medium text-center">
                   Welcome!
                </Text>
@@ -162,12 +167,19 @@ const Home: React.FC = () => {
                   minutes,{" "}
                   <Text className="text-blue-500 font-bold">wins!</Text>
                </Text>
-               <View className="mt-48 mx-auto">
+               <CustomButton
+                  onPress={() => {
+                     ws.sendJsonMessage({ action: "getGameData" });
+                  }}
+               >
+                  Okay
+               </CustomButton>
+               <View className="mx-auto mt-4">
                   <Image
                      source={require("../assets/ReddamHouseLogo.png")}
                      style={{
-                        width: "76%",
-                        height: "76%",
+                        width: "80%",
+                        height: "80%",
                         aspectRatio: 1,
                         resizeMode: "contain",
                      }}
@@ -175,6 +187,7 @@ const Home: React.FC = () => {
                </View>
             </View>
          }
+         modalVisible={gameData?.firstConnection!}
          pressDone={interactionSlideModal}
          pressCancel={interactionSlideModal}
          darkMode={false}

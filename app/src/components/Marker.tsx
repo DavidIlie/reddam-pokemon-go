@@ -62,8 +62,8 @@ const Marker: React.FC<{
                   <ScanQRCode
                      onSuccess={handleScannedQRCode}
                      title={`Scan ${roomName}`}
-                     width={300}
-                     height={300}
+                     width={500}
+                     height={500}
                   />
                   {__DEV__ && (
                      <TouchableOpacity
