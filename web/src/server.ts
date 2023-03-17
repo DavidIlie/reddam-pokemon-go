@@ -58,6 +58,26 @@ expressWsInstance.ws("/ws", async (ws, req) => {
         );
         sendWSMessage(markersFiltered);
         break;
+      case "reportFound":
+        let { room } = JSON.parse(msg);
+        if (connection?.foundRooms.includes(room))
+          return ws.send(
+            JSON.stringify({ action: "getGameData", res: connection! })
+          );
+        if (connection?.rooms.includes(room)) {
+          // TODO: announce other players that someone has found a room
+          connection = await prisma.connection.update({
+            where: { id: connection.id },
+            data: {
+              rooms: connection.rooms.filter((s) => s !== room),
+              foundRooms: [...connection.foundRooms, room],
+            },
+          });
+          return ws.send(
+            JSON.stringify({ action: "getGameData", res: connection! })
+          );
+        }
+        break;
       default:
         break;
     }

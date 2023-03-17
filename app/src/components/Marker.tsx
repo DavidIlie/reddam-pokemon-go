@@ -16,7 +16,10 @@ const Marker: React.FC<{
    const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
 
-   const handleScannedQRCode = (data: string) => {};
+   const handleScannedQRCode = (data: string) => {
+      ws.sendJsonMessage({ action: "reportFound", room: data });
+      setOpenScanModal(false);
+   };
 
    return (
       <>
