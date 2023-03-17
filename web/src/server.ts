@@ -48,8 +48,6 @@ const app = async () => {
     ws.on("message", async (msg: string) => {
       console.log(msg);
 
-      let { action } = JSON.parse(msg);
-
       const sendWSMessage = (s: {}) =>
         ws.send(JSON.stringify({ action, res: s }));
 
@@ -59,6 +57,25 @@ const app = async () => {
         endTime: gameState.endTime,
         markers: markersFiltered,
       });
+
+      if (
+        gameState.status === "STARTED" &&
+        new Date().getTime() > gameState.endTime!.getTime()
+      ) {
+        connection = await prisma.connection.update({
+          where: { id: connection!.id },
+          data: { rooms: [] },
+        });
+        gameState = await prisma.gameState.update({
+          where: { id: gameState.id },
+          data: { status: "FINISHED" },
+        });
+        return ws.send(
+          JSON.stringify({ action: "getGameData", res: gameData([]) })
+        );
+      }
+
+      let { action } = JSON.parse(msg);
 
       switch (action) {
         case "getGameData":
