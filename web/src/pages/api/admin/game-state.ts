@@ -4,6 +4,9 @@ import { checkAuth } from "./check-auth";
 import { GameState } from "@prisma/client";
 import { prisma } from "../../../lib/db";
 import { sendWSMessage } from "../../../lib/sendWSMessages";
+import { getNonAdjacentRooms, markers, Room } from "../../../lib/markers";
+
+let prevMarkers = [] as Room[];
 
 const handler: NextApiHandler = async (req, res) => {
   const check = await checkAuth(req.cookies.auth || "");
@@ -19,9 +22,14 @@ const handler: NextApiHandler = async (req, res) => {
     const connections = await prisma.connection.findMany();
     await Promise.all(
       connections.map(async (connection) => {
+        const rooms = getNonAdjacentRooms(markers, prevMarkers);
         await prisma.connection.update({
           where: { id: connection.id },
-          data: { firstConnection: true },
+          data: {
+            firstConnection: true,
+            rooms: rooms.map((s) => s.roomName),
+            foundRooms: [],
+          },
         });
       })
     );
