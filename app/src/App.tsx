@@ -22,16 +22,10 @@ const Home: React.FC = () => {
    const [gameData, setGameData] = useState<{
       firstConnection: boolean;
       foundRooms: string[];
+      gameStarted: boolean;
+      endTime?: Date;
+      markers: { left: number; top: number; roomName: string }[];
    } | null>(null);
-   const [markers, setMarkers] = useState<
-      {
-         left: number;
-         top: number;
-         right: number;
-         bottom: number;
-         roomName: string;
-      }[]
-   >([]);
    const [floor, setFloor] = useState(1);
 
    useEffect(() => {
@@ -40,7 +34,6 @@ const Home: React.FC = () => {
             setTimeout(() => {
                setLoading(true);
                ws.sendJsonMessage({ action: "getGameData" });
-               ws.sendJsonMessage({ action: "getMarkers" });
             }, 200);
          }
       };
@@ -56,8 +49,6 @@ const Home: React.FC = () => {
                setGameData(parsed.res);
                setLoading(false);
                break;
-            case "getMarkers":
-               setMarkers(parsed.res);
             default:
                break;
          }
@@ -133,7 +124,7 @@ const Home: React.FC = () => {
                            }}
                         >
                            <View>
-                              {markers?.map((marker, index) => (
+                              {gameData?.markers?.map((marker, index) => (
                                  <Marker {...marker} key={index} />
                               ))}
                               <Animated.Image

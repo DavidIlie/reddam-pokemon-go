@@ -13,6 +13,12 @@ model Connection {
   players         String[]
   connectionId    String?  @default(uuid())
   firstConnection Boolean  @default(true)
-  foundRooms String[]
-  rooms String[]
+  foundRooms      String[]
+  rooms           String[]
+}
+
+model GameState {
+  id          String    @id @default(uuid())
+  gameStarted Boolean   @default(false)
+  endTime     DateTime?
 }

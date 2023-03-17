@@ -35,6 +35,10 @@ expressWsInstance.ws("/ws", async (ws, req) => {
     });
   }
 
+  let gameState = (await prisma.gameState.findMany())[0];
+  if (!gameState)
+    gameState = await prisma.gameState.create({ data: { gameStarted: false } });
+
   ws.on("message", async (msg: string) => {
     console.log(msg);
 
@@ -43,33 +47,37 @@ expressWsInstance.ws("/ws", async (ws, req) => {
     const sendWSMessage = (s: {}) =>
       ws.send(JSON.stringify({ action, res: s }));
 
+    const gameData = (markersFiltered: any) => ({
+      ...connection!,
+      gameStarted: gameState.gameStarted,
+      endTime: gameState.endTime,
+      markers: markersFiltered,
+    });
+
     switch (action) {
       case "getGameData":
-        sendWSMessage(connection!);
+        const connectionRooms = connection!.rooms;
+        let markersFiltered = markers.filter((s) =>
+          connectionRooms.includes(s.roomName)
+        );
+        sendWSMessage(gameData(markersFiltered));
         connection = await prisma.connection.update({
           where: { id: connection!.id },
           data: { firstConnection: false },
         });
         break;
-      case "getMarkers":
-        const connectionRooms = connection!.rooms;
-        let markersFiltered = markers.filter((s) =>
-          connectionRooms.includes(s.roomName)
-        );
-        sendWSMessage(markersFiltered);
-        break;
       case "reportFound":
         let { room } = JSON.parse(msg);
         if (connection?.foundRooms.includes(room)) {
-          ws.send(JSON.stringify({ action: "getGameData", res: connection! }));
-          return ws.send(
+          ws.send(
             JSON.stringify({
-              action: "getMarkers",
-              res: markers.filter((s) =>
-                connection!.rooms.includes(s.roomName)
+              action: "getGameData",
+              res: gameData(
+                markers.filter((s) => connection!.rooms.includes(s.roomName))
               ),
             })
           );
+          break;
         }
         if (connection?.rooms.includes(room)) {
           // TODO: announce other players that someone has found a room
@@ -90,12 +98,11 @@ expressWsInstance.ws("/ws", async (ws, req) => {
               data: { rooms: rooms.map((s) => s.roomName) },
             });
           }
-          ws.send(JSON.stringify({ action: "getGameData", res: connection! }));
-          return ws.send(
+          ws.send(
             JSON.stringify({
-              action: "getMarkers",
-              res: markers.filter((s) =>
-                connection!.rooms.includes(s.roomName)
+              action: "getGameData",
+              res: gameData(
+                markers.filter((s) => connection!.rooms.includes(s.roomName))
               ),
             })
           );

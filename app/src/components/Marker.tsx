@@ -9,10 +9,8 @@ import { useWS } from "./WebSocketContext";
 const Marker: React.FC<{
    top: number;
    left: number;
-   right: number;
-   bottom: number;
    roomName: string;
-}> = ({ top, bottom, left, right, roomName }) => {
+}> = ({ top, left, roomName }) => {
    const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
 
@@ -28,7 +26,7 @@ const Marker: React.FC<{
             easing="ease-out"
             iterationCount="infinite"
             className="absolute z-50"
-            style={top === 0 && left === 0 ? { bottom, right } : { top, left }}
+            style={{ top, left }}
          >
             <TouchableOpacity
                onPress={() => setOpenScanModal(true)}
