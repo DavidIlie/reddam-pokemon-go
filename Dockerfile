@@ -5,7 +5,7 @@ COPY . .
 WORKDIR /web
 
 RUN pnpm install
-RUN pnpm db:generate
+RUN pnpm prepare:db
 
 EXPOSE 3001
 CMD ["pnpm", "start:web"]
