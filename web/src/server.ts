@@ -138,5 +138,5 @@ server.get("/message", async (req, res) => {
 });
 
 server.listen(3001, () => {
-  console.log("> WS server alive on port 3001");
+  console.log("> WS server alive on port 3001 i hope");
 });
