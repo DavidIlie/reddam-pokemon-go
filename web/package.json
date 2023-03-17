@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "NODE_ENV=production next start",
-    "dev:ws": "nodemon src/server.ts"
+    "dev:ws": "nodemon src/server.ts",
+    "prepare:db": "prisma db push && prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4.9.0",
