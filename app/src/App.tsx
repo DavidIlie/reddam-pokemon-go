@@ -27,12 +27,13 @@ const Home: React.FC = () => {
       foundRooms: string[];
       status: "NOT_STARTED" | "STARTED" | "FINISHED";
       endTime?: Date;
-      markers: { left: number; top: number; roomName: string }[];
+      markers: { left: number; top: number; roomName: string; floor: 1 | 2 }[];
    } | null>(null);
    const [floor, setFloor] = useState(1);
 
    useEffect(() => {
       const getData = async () => {
+         return;
          if (ws.readyState === ReadyState.OPEN) {
             setTimeout(() => {
                setLoading(true);
@@ -76,7 +77,7 @@ const Home: React.FC = () => {
          </SafeAreaView>
       );
 
-   if (gameData?.status === "FINISHED")
+   if (gameData?.status === "FINISHED" || gameData?.markers.length === 0)
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
@@ -153,20 +154,41 @@ const Home: React.FC = () => {
                               ],
                            }}
                         >
-                           <View>
-                              {gameData?.markers?.map((marker, index) => (
-                                 <Marker {...marker} key={index} />
-                              ))}
-                              <Animated.Image
-                                 source={require("../assets/1st_floor_mansion_PHOTOSHOPPED.png")}
-                                 style={{
-                                    width: "80%",
-                                    height: "80%",
-                                    aspectRatio: 1,
-                                    resizeMode: "contain",
-                                 }}
-                              />
-                           </View>
+                           {floor === 1 ? (
+                              <View>
+                                 {gameData?.markers
+                                    ?.filter((s) => s.floor === 1)
+                                    .map((marker, index) => (
+                                       <Marker {...marker} key={index} />
+                                    ))}
+                                 <Animated.Image
+                                    source={require("../assets/FLOOR_1.png")}
+                                    style={{
+                                       width: "80%",
+                                       height: "80%",
+                                       aspectRatio: 1,
+                                       resizeMode: "contain",
+                                    }}
+                                 />
+                              </View>
+                           ) : (
+                              <View>
+                                 {gameData?.markers
+                                    ?.filter((s) => s.floor === 2)
+                                    .map((marker, index) => (
+                                       <Marker {...marker} key={index} />
+                                    ))}
+                                 <Animated.Image
+                                    source={require("../assets/FLOOR_2.png")}
+                                    style={{
+                                       width: "80%",
+                                       height: "80%",
+                                       aspectRatio: 1,
+                                       resizeMode: "contain",
+                                    }}
+                                 />
+                              </View>
+                           )}
                         </Animated.View>
                      )}
                   </PinchPan>

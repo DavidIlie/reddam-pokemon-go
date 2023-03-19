@@ -30,7 +30,7 @@ const Marker: React.FC<{
    ];
 
    const index = parseInt(roomName.substr(-2));
-   const color = colors[index % colors.length];
+   const color = colors[index % colors.length] || "#0ea5e9";
 
    return (
       <>
