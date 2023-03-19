@@ -19,6 +19,19 @@ const Marker: React.FC<{
       setOpenScanModal(false);
    };
 
+   const colors = [
+      "#ef4444",
+      "#f59e0b",
+      "#22c55e",
+      "#06b6d4",
+      "#0ea5e9",
+      "#3b82f6",
+      "#6366f1",
+   ];
+
+   const index = parseInt(roomName.substr(-2));
+   const color = colors[index % colors.length];
+
    return (
       <>
          <Animatable.View
@@ -30,7 +43,8 @@ const Marker: React.FC<{
          >
             <TouchableOpacity
                onPress={() => setOpenScanModal(true)}
-               className="absolute rounded-full px-1 py-1 bg-red-500 opacity-50 h-6 w-6"
+               className={`absolute rounded-full px-1 py-1 opacity-50 h-6 w-6`}
+               style={{ backgroundColor: color }}
             >
                <Text
                   style={{ fontSize: 6 }}
@@ -68,7 +82,10 @@ const Marker: React.FC<{
                   />
                   {__DEV__ && (
                      <TouchableOpacity
-                        onPress={() => handleScannedQRCode(roomName)}
+                        onPress={() => {
+                           console.log("hi");
+                           handleScannedQRCode(roomName);
+                        }}
                         className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
                      >
                         <Text className="text-white text-lg font-medium">

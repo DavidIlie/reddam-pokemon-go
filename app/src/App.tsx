@@ -16,6 +16,7 @@ import { useWS } from "./components/WebSocketContext";
 import PinchPan from "./components/PinchPan";
 import Marker from "./components/Marker";
 import CustomButton from "./components/CustomButton";
+import CountdownTimer from "./components/Timer";
 
 const Home: React.FC = () => {
    const toast = useToast();
@@ -94,7 +95,12 @@ const Home: React.FC = () => {
             <SafeAreaView className="h-full w-full bg-white">
                <View className="bg-white z-50 border-b pb-1 border-gray-300">
                   <View className="p-2">
-                     <Text className="text-lg text-center">Time Left:</Text>
+                     <Text className="text-lg text-center">
+                        Time Left:{" "}
+                        <CountdownTimer
+                           endTime={new Date(gameData?.endTime!)}
+                        />
+                     </Text>
                      <Text className="text-lg text-center mt-1">
                         Total Points:{" "}
                         <Text className="font-bold text-blue-500">
@@ -135,7 +141,7 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               <View className="h-[80%]">
+               <View className="h-[122%]">
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View

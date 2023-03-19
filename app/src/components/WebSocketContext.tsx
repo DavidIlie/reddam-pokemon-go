@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from "react";
 import { SafeAreaView, Text } from "react-native";
 import useWebSocket, { ReadyState } from "react-native-use-websocket";
 import type { WebSocketHook } from "react-native-use-websocket/lib/typescript/src/lib/types";
+import * as SecureStore from "expo-secure-store";
 
 import { Loading } from "./Loading";
 
@@ -16,7 +17,7 @@ export const AuthWSWrapper: React.FC<{
    // const [socketUrl] = useState(
    //    `wss://reddam-pokemon-go-production.up.railway.app/ws?auth=${uuid}`
    // );
-   const [socketUrl] = useState(`ws://localhost:3001/ws?auth=${uuid}`);
+   const [socketUrl] = useState(`ws://10.172.140.16:3001/ws?auth=${uuid}`);
 
    const ws = useWebSocket(socketUrl, {
       shouldReconnect: () => true,

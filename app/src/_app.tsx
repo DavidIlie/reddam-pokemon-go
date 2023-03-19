@@ -22,6 +22,7 @@ const AppUnderscore: React.FC = () => {
 
    useEffect(() => {
       const work = async () => {
+         // await SecureStore.deleteItemAsync("uuid");
          const uuid = await SecureStore.getItemAsync("uuid");
          if (!uuid) {
             setLoading(false);
@@ -88,7 +89,7 @@ const AppUnderscore: React.FC = () => {
             )
          ) : (
             <AuthWSWrapper uuid={uuid}>
-               <ToastProvider offsetBottom={100} textStyle={{ fontSize: 20 }}>
+               <ToastProvider offsetBottom={50} textStyle={{ fontSize: 20 }}>
                   <App />
                </ToastProvider>
             </AuthWSWrapper>

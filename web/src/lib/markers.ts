@@ -155,7 +155,7 @@ export const getNonAdjacentRooms = (
 const areAdjacent = (room1: Room, room2: Room): boolean => {
   const horizontalDistance = Math.abs(room1.left - room2.left);
   const verticalDistance = Math.abs(room1.top - room2.top);
-  const minDistance = 50;
+  const minDistance = 10;
 
   return horizontalDistance < minDistance && verticalDistance < minDistance;
 };
