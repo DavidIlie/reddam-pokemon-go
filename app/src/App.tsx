@@ -33,7 +33,6 @@ const Home: React.FC = () => {
 
    useEffect(() => {
       const getData = async () => {
-         return;
          if (ws.readyState === ReadyState.OPEN) {
             setTimeout(() => {
                setLoading(true);
@@ -77,7 +76,7 @@ const Home: React.FC = () => {
          </SafeAreaView>
       );
 
-   if (gameData?.status === "FINISHED" || gameData?.markers.length === 0)
+   if (gameData?.status === "FINISHED")
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
@@ -86,7 +85,10 @@ const Home: React.FC = () => {
       );
 
    const interactionSlideModal = () => {
-      ws.sendJsonMessage({ action: "getGameData" });
+      ws.sendJsonMessage({ action: "clearFirstConnection" });
+      setTimeout(() => {
+         ws.sendJsonMessage({ action: "getGameData" });
+      }, 500);
    };
 
    return (
@@ -142,7 +144,8 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               <View className="h-[122%]">
+               {/* <View className="h-[122%]"> */}
+               <View className="h-[113%]">
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View
@@ -157,7 +160,7 @@ const Home: React.FC = () => {
                            {floor === 1 ? (
                               <View>
                                  {gameData?.markers
-                                    ?.filter((s) => s.floor === 1)
+                                    .filter((s) => s.floor === 1)
                                     .map((marker, index) => (
                                        <Marker {...marker} key={index} />
                                     ))}
@@ -174,7 +177,7 @@ const Home: React.FC = () => {
                            ) : (
                               <View>
                                  {gameData?.markers
-                                    ?.filter((s) => s.floor === 2)
+                                    .filter((s) => s.floor === 2)
                                     .map((marker, index) => (
                                        <Marker {...marker} key={index} />
                                     ))}
@@ -209,11 +212,7 @@ const Home: React.FC = () => {
                   minutes,{" "}
                   <Text className="text-blue-500 font-bold">wins!</Text>
                </Text>
-               <CustomButton
-                  onPress={() => {
-                     ws.sendJsonMessage({ action: "getGameData" });
-                  }}
-               >
+               <CustomButton onPress={() => interactionSlideModal()}>
                   Okay
                </CustomButton>
                <View className="mx-auto mt-4">

@@ -22,14 +22,9 @@ const handler: NextApiHandler = async (req, res) => {
     const connections = await prisma.connection.findMany();
     await Promise.all(
       connections.map(async (connection) => {
-        const rooms = getNonAdjacentRooms(markers, prevMarkers);
         await prisma.connection.update({
           where: { id: connection.id },
-          data: {
-            firstConnection: true,
-            rooms: rooms.map((s) => s.roomName),
-            foundRooms: [],
-          },
+          data: { firstConnection: true, rooms: [], foundRooms: [] },
         });
       })
     );

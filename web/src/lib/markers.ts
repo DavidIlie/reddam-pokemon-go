@@ -157,24 +157,6 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
-    top: 168,
-    left: 15,
-    roomName: "SXX1",
-    floor: 2,
-  },
-  {
-    top: 191,
-    left: 8,
-    roomName: "SXX2",
-    floor: 2,
-  },
-  {
-    top: 208,
-    left: 8,
-    roomName: "SXX3",
-    floor: 2,
-  },
-  {
     top: 230,
     left: 8,
     roomName: "SXX4",
@@ -183,49 +165,49 @@ export const markers: Room[] = [
   {
     top: 261,
     left: 50,
-    roomName: "SXX5",
+    roomName: "S211",
     floor: 2,
   },
   {
     top: 259,
     left: 78,
-    roomName: "SXX6",
+    roomName: "S210",
     floor: 2,
   },
   {
     top: 259,
     left: 105,
-    roomName: "SXX7",
+    roomName: "S209",
     floor: 2,
   },
   {
     top: 253,
     left: 160,
-    roomName: "SXX8",
+    roomName: "S207",
     floor: 2,
   },
   {
     top: 252,
     left: 184,
-    roomName: "SXX9",
+    roomName: "S207",
     floor: 2,
   },
   {
     top: 252,
     left: 202,
-    roomName: "SX10",
+    roomName: "S207",
     floor: 2,
   },
   {
     top: 240,
     left: 249,
-    roomName: "SX11",
+    roomName: "S201",
     floor: 2,
   },
   {
     top: 240,
     left: 278,
-    roomName: "SX12",
+    roomName: "S202",
     floor: 2,
   },
   {
@@ -243,37 +225,19 @@ export const markers: Room[] = [
   {
     top: 200,
     left: 251,
-    roomName: "SX13",
-    floor: 2,
-  },
-  {
-    top: 197,
-    left: 229,
-    roomName: "SX14",
-    floor: 2,
-  },
-  {
-    top: 204,
-    left: 208,
-    roomName: "SX15",
+    roomName: "S204",
     floor: 2,
   },
   {
     top: 204,
     left: 189,
-    roomName: "SX16",
+    roomName: "S205",
     floor: 2,
   },
   {
     top: 204,
     left: 172,
-    roomName: "SX17",
-    floor: 2,
-  },
-  {
-    top: 204,
-    left: 152,
-    roomName: "SX18",
+    roomName: "S206",
     floor: 2,
   },
 ];
@@ -323,7 +287,7 @@ export const getNonAdjacentRooms = (
 const areAdjacent = (room1: Room, room2: Room): boolean => {
   const horizontalDistance = Math.abs(room1.left - room2.left);
   const verticalDistance = Math.abs(room1.top - room2.top);
-  const minDistance = 10;
+  const minDistance = 20;
 
   return horizontalDistance < minDistance && verticalDistance < minDistance;
 };

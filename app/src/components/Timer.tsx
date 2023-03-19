@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text } from "react-native";
+import { useWS } from "./WebSocketContext";
 
 const CountdownTimer: React.FC<{ endTime: Date }> = ({ endTime }) => {
+   const { ws } = useWS();
    const [timeLeft, setTimeLeft] = useState("");
 
    useEffect(() => {
@@ -12,6 +14,7 @@ const CountdownTimer: React.FC<{ endTime: Date }> = ({ endTime }) => {
          if (distance < 0) {
             clearInterval(intervalId);
             setTimeLeft("0:00");
+            ws.sendJsonMessage({ action: "getGameData" });
          } else {
             const minutes = Math.floor(
                (distance % (1000 * 60 * 60)) / (1000 * 60)

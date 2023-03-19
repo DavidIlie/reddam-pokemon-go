@@ -35,7 +35,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
     "/api/admin/connections",
     fetcher,
     {
-      refreshInterval: 5000,
+      refreshInterval: 1000,
     }
   );
 

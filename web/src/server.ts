@@ -37,14 +37,6 @@ const app = async () => {
     console.log(`CONNECTION: ${connection.name}`);
     connections.push({ ws: ws as any, connectionId: connection.connectionId! });
 
-    if (connection.firstConnection) {
-      const rooms = getNonAdjacentRooms(markers, prevMarkers);
-      connection = await prisma.connection.update({
-        where: { id: connection!.id },
-        data: { rooms: rooms.map((s) => s.roomName) },
-      });
-    }
-
     ws.on("message", async (msg: string) => {
       console.log(msg);
 
@@ -77,21 +69,28 @@ const app = async () => {
 
       let { action } = JSON.parse(msg);
 
+      const connectionRooms = connection!.rooms;
+
       switch (action) {
+        case "clearFirstConnection":
+          const rooms = getNonAdjacentRooms(markers, prevMarkers);
+          connection = await prisma.connection.update({
+            where: { id: connection!.id },
+            data: {
+              firstConnection: false,
+              rooms: rooms.map((s) => s.roomName),
+            },
+          });
+          break;
         case "getGameData":
           connection = await prisma.connection.findFirst({
             where: { id: connection!.id },
           });
           gameState = (await prisma.gameState.findMany())[0];
-          const connectionRooms = connection!.rooms;
           let markersFiltered = markers.filter((s) =>
             connectionRooms.includes(s.roomName)
           );
           sendWSMessage(gameData(markersFiltered));
-          connection = await prisma.connection.update({
-            where: { id: connection!.id },
-            data: { firstConnection: false },
-          });
           break;
         case "reportFound":
           let { room } = JSON.parse(msg);
@@ -116,7 +115,7 @@ const app = async () => {
                   c.ws.send(
                     JSON.stringify({
                       action: "someoneGotPoint",
-                      res: `Team ${bigC!.name} has scored a point!`,
+                      res: `${bigC!.name} has scored a point!`,
                     })
                   );
                 }
