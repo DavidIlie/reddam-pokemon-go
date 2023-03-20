@@ -76,7 +76,10 @@ const Home: React.FC = () => {
          </SafeAreaView>
       );
 
-   if (gameData?.status === "FINISHED")
+   if (
+      gameData?.status === "FINISHED" ||
+      (gameData?.status === "STARTED" && gameData?.markers.length === 0)
+   )
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
