@@ -147,8 +147,8 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               {/* <View className="h-[122%]"> */}
-               <View className="h-[113%]">
+               <View className="h-[122%]">
+                  {/* <View className="h-[113%]"> */}
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View
@@ -160,41 +160,22 @@ const Home: React.FC = () => {
                               ],
                            }}
                         >
-                           {floor === 1 ? (
-                              <View>
-                                 {gameData?.markers
-                                    .filter((s) => s.floor === 1)
-                                    .map((marker, index) => (
-                                       <Marker {...marker} key={index} />
-                                    ))}
-                                 <Animated.Image
-                                    source={require("../assets/FLOOR_1.png")}
-                                    style={{
-                                       width: "80%",
-                                       height: "80%",
-                                       aspectRatio: 1,
-                                       resizeMode: "contain",
-                                    }}
-                                 />
-                              </View>
-                           ) : (
-                              <View>
-                                 {gameData?.markers
-                                    .filter((s) => s.floor === 2)
-                                    .map((marker, index) => (
-                                       <Marker {...marker} key={index} />
-                                    ))}
-                                 <Animated.Image
-                                    source={require("../assets/FLOOR_2.png")}
-                                    style={{
-                                       width: "80%",
-                                       height: "80%",
-                                       aspectRatio: 1,
-                                       resizeMode: "contain",
-                                    }}
-                                 />
-                              </View>
-                           )}
+                           <View>
+                              {gameData?.markers
+                                 .filter((s) => s.floor === floor)
+                                 .map((marker, index) => (
+                                    <Marker {...marker} key={index} />
+                                 ))}
+                              <Animated.Image
+                                 source={require(`../assets/FLOOR_${floor}.png`)}
+                                 style={{
+                                    width: "80%",
+                                    height: "80%",
+                                    aspectRatio: 1,
+                                    resizeMode: "contain",
+                                 }}
+                              />
+                           </View>
                         </Animated.View>
                      )}
                   </PinchPan>
