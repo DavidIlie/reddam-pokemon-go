@@ -78,12 +78,20 @@ const Home: React.FC = () => {
 
    if (
       gameData?.status === "FINISHED" ||
-      (gameData?.status === "STARTED" && gameData?.markers.length === 0)
+      (gameData?.status === "STARTED" &&
+         gameData?.markers.length === 0 &&
+         !gameData?.firstConnection)
    )
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
             <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
-            <Text className="text-lg">Go back to class!</Text>
+            <Text className="text-lg">
+               You scored{" "}
+               <Text className="text-blue-500 font-bold">
+                  {gameData?.foundRooms.length}
+               </Text>{" "}
+               points, go back to the drawing room!
+            </Text>
          </SafeAreaView>
       );
 
@@ -91,7 +99,7 @@ const Home: React.FC = () => {
       ws.sendJsonMessage({ action: "clearFirstConnection" });
       setTimeout(() => {
          ws.sendJsonMessage({ action: "getGameData" });
-      }, 500);
+      }, 100);
    };
 
    return (
@@ -147,8 +155,8 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               <View className="h-[122%]">
-                  {/* <View className="h-[113%]"> */}
+               {/* <View className="h-[122%]"> */}
+               <View className="h-[113%]">
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View
@@ -167,7 +175,11 @@ const Home: React.FC = () => {
                                     <Marker {...marker} key={index} />
                                  ))}
                               <Animated.Image
-                                 source={require(`../assets/FLOOR_${floor}.png`)}
+                                 source={
+                                    floor === 1
+                                       ? require(`../assets/FLOOR_1.png`)
+                                       : require(`../assets/FLOOR_2.png`)
+                                 }
                                  style={{
                                     width: "80%",
                                     height: "80%",
@@ -185,7 +197,7 @@ const Home: React.FC = () => {
          modalContainer={
             <View className="px-4 mt-24 w-full">
                <Text className="text-3xl font-medium text-center">
-                  Welcome!
+                  Welcome Year 5's!
                </Text>
                <Text className="text-center text-lg mt-2">
                   Try and find as many points around Reddam...

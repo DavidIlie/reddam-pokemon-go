@@ -25,6 +25,8 @@ const app = async () => {
     console.log(gameState);
   }
 
+  console.log("TOTAL ROOM COUNT", markers.length);
+
   expressWsInstance.ws("/ws", async (ws, req) => {
     const { auth } = req.query as { auth: string };
     if (!auth) return ws.close();

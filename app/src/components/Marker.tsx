@@ -82,10 +82,7 @@ const Marker: React.FC<{
                   />
                   {__DEV__ && (
                      <TouchableOpacity
-                        onPress={() => {
-                           console.log("hi");
-                           handleScannedQRCode(roomName);
-                        }}
+                        onPress={() => handleScannedQRCode(roomName)}
                         className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
                      >
                         <Text className="text-white text-lg font-medium">

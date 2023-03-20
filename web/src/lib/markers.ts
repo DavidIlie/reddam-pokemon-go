@@ -157,12 +157,6 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
-    top: 230,
-    left: 8,
-    roomName: "SXX4",
-    floor: 2,
-  },
-  {
     top: 261,
     left: 50,
     roomName: "S211",
@@ -244,50 +238,46 @@ export const markers: Room[] = [
 
 export const getNonAdjacentRooms = (
   rooms: Room[],
-  previousRooms: Room[]
+  foundRooms: Room[]
 ): Room[] => {
-  const selectedRooms: Room[] = [];
-  const floor1Rooms: Room[] = [];
-  const floor2Rooms: Room[] = [];
+  const remainingRooms = rooms.filter((room) => !foundRooms.includes(room));
+  const shuffledRooms = shuffleArray(remainingRooms);
 
-  for (const room of rooms) {
-    if (room.floor === 1) {
-      floor1Rooms.push(room);
-    } else if (room.floor === 2) {
-      floor2Rooms.push(room);
-    }
-  }
+  let nonAdjacentRooms: Room[] = [];
 
-  while (selectedRooms.length < 10) {
-    let candidateRoom: Room;
-
-    if (selectedRooms.filter((room) => room.floor === 1).length < 3) {
-      candidateRoom =
-        floor1Rooms[Math.floor(Math.random() * floor1Rooms.length)];
-    } else if (selectedRooms.filter((room) => room.floor === 2).length < 3) {
-      candidateRoom =
-        floor2Rooms[Math.floor(Math.random() * floor2Rooms.length)];
-    } else {
-      const allRooms = [...floor1Rooms, ...floor2Rooms];
-      candidateRoom = allRooms[Math.floor(Math.random() * allRooms.length)];
-    }
+  for (
+    let i = 0;
+    i < shuffledRooms.length && nonAdjacentRooms.length < 4;
+    i++
+  ) {
+    const room = shuffledRooms[i];
 
     if (
-      !selectedRooms.includes(candidateRoom) &&
-      !previousRooms.some((room) => areAdjacent(room, candidateRoom)) &&
-      !selectedRooms.some((room) => areAdjacent(room, candidateRoom))
+      !nonAdjacentRooms.some((r) => isAdjacent(r, room)) &&
+      nonAdjacentRooms.every((r) => r.floor !== room.floor)
     ) {
-      selectedRooms.push(candidateRoom);
+      nonAdjacentRooms.push(room);
     }
   }
 
-  return selectedRooms;
+  return nonAdjacentRooms;
 };
 
-const areAdjacent = (room1: Room, room2: Room): boolean => {
-  const horizontalDistance = Math.abs(room1.left - room2.left);
-  const verticalDistance = Math.abs(room1.top - room2.top);
-  const minDistance = 20;
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffledArray = [...array];
 
-  return horizontalDistance < minDistance && verticalDistance < minDistance;
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+
+  return shuffledArray;
+};
+
+const isAdjacent = (room1: Room, room2: Room): boolean => {
+  return (
+    Math.abs(room1.left - room2.left) <= 1 &&
+    Math.abs(room1.top - room2.top) <= 1 &&
+    room1.floor === room2.floor
+  );
 };
