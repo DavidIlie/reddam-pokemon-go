@@ -17,7 +17,7 @@ const app = async () => {
   let prevMarkers = [] as Room[];
 
   console.log("checking for game sate");
-  let gameState = (await prisma.gameState.findMany())[0];
+  let gameState = await prisma.gameState.findFirst();
   console.log(gameState);
   if (!gameState) {
     console.log("creating game state");
@@ -47,21 +47,21 @@ const app = async () => {
 
       const gameData = (markersFiltered: any) => ({
         ...connection!,
-        status: gameState.status,
-        endTime: gameState.endTime,
+        status: gameState!.status,
+        endTime: gameState!.endTime,
         markers: markersFiltered,
       });
 
       if (
-        gameState.status === "STARTED" &&
-        new Date().getTime() > gameState.endTime!.getTime()
+        gameState!.status === "STARTED" &&
+        new Date().getTime() > gameState!.endTime!.getTime()
       ) {
         connection = await prisma.connection.update({
           where: { id: connection!.id },
           data: { rooms: [] },
         });
         gameState = await prisma.gameState.update({
-          where: { id: gameState.id },
+          where: { id: gameState!.id },
           data: { status: "FINISHED" },
         });
         return ws.send(
@@ -75,12 +75,11 @@ const app = async () => {
 
       switch (action) {
         case "clearFirstConnection":
-          const rooms = getNonAdjacentRooms(markers, prevMarkers);
           connection = await prisma.connection.update({
             where: { id: connection!.id },
             data: {
               firstConnection: false,
-              rooms: rooms.map((s) => s.roomName),
+              rooms: getNonAdjacentRooms(markers, prevMarkers),
             },
           });
           break;
@@ -131,15 +130,16 @@ const app = async () => {
               },
             });
             if (connection.rooms.length < 4) {
-              const rooms = getNonAdjacentRooms(
-                markers,
-                markers.filter((s) =>
-                  connection!.foundRooms.includes(s.roomName)
-                )
-              );
               connection = await prisma.connection.update({
                 where: { id: connection!.id },
-                data: { rooms: rooms.map((s) => s.roomName) },
+                data: {
+                  rooms: getNonAdjacentRooms(
+                    markers,
+                    markers.filter((s) =>
+                      connection!.foundRooms.includes(s.roomName)
+                    )
+                  ),
+                },
               });
             }
             ws.send(

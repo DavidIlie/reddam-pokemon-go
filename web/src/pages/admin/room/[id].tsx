@@ -7,7 +7,14 @@ const GetByID: NextPage = () => {
     query: { id },
   } = useRouter();
 
-  return <QRCode value={id as string} className="p-4" />;
+  return (
+    <div className="p-3">
+      <h1 className="mb-2 text-center text-2xl font-bold">{id}</h1>
+      <div className="flex w-full justify-center">
+        <QRCode value={id as string} />
+      </div>
+    </div>
+  );
 };
 
 export default GetByID;

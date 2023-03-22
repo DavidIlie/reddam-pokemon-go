@@ -7,21 +7,21 @@ export interface Room {
 
 export const markers: Room[] = [
   {
-    top: 168,
-    left: 25,
-    roomName: "S114",
-    floor: 1,
-  },
-  {
     top: 188,
     left: 20,
     roomName: "S115",
     floor: 1,
   },
   {
-    top: 235,
+    top: 205,
     left: 20,
-    roomName: "S116",
+    roomName: "A4",
+    floor: 1,
+  },
+  {
+    top: 257,
+    left: 30,
+    roomName: "A3",
     floor: 1,
   },
   {
@@ -31,105 +31,9 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
-    top: 254,
-    left: 88,
-    roomName: "S118",
-    floor: 1,
-  },
-  {
-    top: 256,
-    left: 116,
-    roomName: "S119",
-    floor: 1,
-  },
-  {
-    top: 254,
-    left: 141,
-    roomName: "A???",
-    floor: 1,
-  },
-  {
-    top: 249,
-    left: 165,
-    roomName: "S120",
-    floor: 1,
-  },
-  {
-    top: 249,
-    left: 191,
-    roomName: "O???",
-    floor: 1,
-  },
-  {
-    top: 246,
-    left: 209,
-    roomName: "S121",
-    floor: 1,
-  },
-  {
-    top: 235,
-    left: 252,
-    roomName: "S101",
-    floor: 1,
-  },
-  {
-    top: 235,
-    left: 279,
-    roomName: "S102",
-    floor: 1,
-  },
-  {
-    top: 199,
-    left: 309,
-    roomName: "S103",
-    floor: 1,
-  },
-  {
-    top: 180,
-    left: 301,
-    roomName: "S104",
-    floor: 1,
-  },
-  {
-    top: 169,
-    left: 301,
-    roomName: "S105",
-    floor: 1,
-  },
-  {
-    top: 154,
-    left: 301,
-    roomName: "S106",
-    floor: 1,
-  },
-  {
-    top: 140,
-    left: 301,
-    roomName: "S107",
-    floor: 1,
-  },
-  {
-    top: 123,
-    left: 301,
-    roomName: "S108",
-    floor: 1,
-  },
-  {
-    top: 100,
-    left: 301,
-    roomName: "S109",
-    floor: 1,
-  },
-  {
     top: 200,
     left: 251,
     roomName: "A1",
-    floor: 1,
-  },
-  {
-    top: 197,
-    left: 229,
-    roomName: "S110",
     floor: 1,
   },
   {
@@ -145,22 +49,10 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
-    top: 170,
-    left: 89,
-    roomName: "S112",
-    floor: 1,
-  },
-  {
     top: 164,
     left: 53,
-    roomName: "A3",
+    roomName: "S113",
     floor: 1,
-  },
-  {
-    top: 261,
-    left: 50,
-    roomName: "S211",
-    floor: 2,
   },
   {
     top: 259,
@@ -174,22 +66,22 @@ export const markers: Room[] = [
     roomName: "S209",
     floor: 2,
   },
-  {
-    top: 253,
-    left: 160,
-    roomName: "S207",
-    floor: 2,
-  },
+  // {
+  //   top: 253,
+  //   left: 160,
+  //   roomName: "S207a",
+  //   floor: 2,
+  // },
   {
     top: 252,
     left: 184,
-    roomName: "S207",
+    roomName: "S207b",
     floor: 2,
   },
   {
     top: 252,
     left: 202,
-    roomName: "S207",
+    roomName: "S207a",
     floor: 2,
   },
   {
@@ -213,7 +105,7 @@ export const markers: Room[] = [
   {
     top: 113,
     left: 295,
-    roomName: "ARB",
+    roomName: "ARTB",
     floor: 2,
   },
   {
@@ -222,24 +114,21 @@ export const markers: Room[] = [
     roomName: "S204",
     floor: 2,
   },
-  {
-    top: 204,
-    left: 189,
-    roomName: "S205",
-    floor: 2,
-  },
-  {
-    top: 204,
-    left: 172,
-    roomName: "S206",
-    floor: 2,
-  },
 ];
 
 export const getNonAdjacentRooms = (
   rooms: Room[],
   foundRooms: Room[]
-): Room[] => {
+): string[] => {
+  const rooms1 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
+  const rooms2 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
+  const rooms3 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
+  const rooms4 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
+  const grouped = [rooms1, rooms2, rooms3, rooms4];
+  return ([] as string[]).concat(...grouped);
+};
+
+const getNonAdjancentRoom = (rooms: Room[], foundRooms: Room[]): Room[] => {
   const remainingRooms = rooms.filter((room) => !foundRooms.includes(room));
   const shuffledRooms = shuffleArray(remainingRooms);
 
@@ -251,7 +140,6 @@ export const getNonAdjacentRooms = (
     i++
   ) {
     const room = shuffledRooms[i];
-
     if (
       !nonAdjacentRooms.some((r) => isAdjacent(r, room)) &&
       nonAdjacentRooms.every((r) => r.floor !== room.floor)
