@@ -29,6 +29,7 @@ const Home: React.FC = () => {
       endTime?: Date;
       name: string;
       totalRooms: number;
+      production: boolean;
       markers: { left: number; top: number; roomName: string; floor: 1 | 2 }[];
    } | null>(null);
    const [floor, setFloor] = useState(1);
@@ -177,8 +178,7 @@ const Home: React.FC = () => {
                      </View>
                   </View>
                </View>
-               {/* <View className="h-[122%]"> */}
-               <View className="h-[113%]">
+               <View className={gameData?.production ? "h-[122%]" : "h-[113%]"}>
                   <PinchPan>
                      {({ scale, x, y }) => (
                         <Animated.View
@@ -194,7 +194,11 @@ const Home: React.FC = () => {
                               {gameData?.markers
                                  .filter((s) => s.floor === floor)
                                  .map((marker, index) => (
-                                    <Marker {...marker} key={index} />
+                                    <Marker
+                                       {...marker}
+                                       prod={gameData?.production}
+                                       key={index}
+                                    />
                                  ))}
                               <Animated.Image
                                  source={

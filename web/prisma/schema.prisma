@@ -25,8 +25,9 @@ enum GameStatus {
 }
 
 model GameState {
-  id        String     @id @default(uuid())
-  status    GameStatus @default(NOT_STARTED)
-  endTime   DateTime?
-  startTime DateTime?
+  id         String     @id @default(uuid())
+  status     GameStatus @default(NOT_STARTED)
+  endTime    DateTime?
+  startTime  DateTime?
+  production Boolean    @default(false)
 }

@@ -163,6 +163,22 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
           >
             get room qr codes
           </Link>
+          <h1
+            onClick={async () => {
+              const r = await fetch("/api/admin/game-state", {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({
+                  production: data?.gameState.production ? false : true,
+                }),
+              });
+              if (r.status !== 200) alert("check console");
+              reload();
+            }}
+            className="cursor-pointer duration-150 hover:text-blue-500 hover:underline"
+          >
+            - switch to {data?.gameState.production ? "dev" : "prod"}
+          </h1>
         </div>
       </div>
       {isLoading && !data && <div>Loading data...</div>}

@@ -55,6 +55,7 @@ const app = async () => {
         endTime: gameState!.endTime,
         markers: markersFiltered,
         totalRooms: markers.length,
+        production: gameState!.production,
       });
 
       if (

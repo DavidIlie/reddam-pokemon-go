@@ -10,7 +10,8 @@ const Marker: React.FC<{
    top: number;
    left: number;
    roomName: string;
-}> = ({ top, left, roomName }) => {
+   prod: boolean;
+}> = ({ top, left, prod, roomName }) => {
    const { ws } = useWS();
    const [openScanModal, setOpenScanModal] = useState(false);
 
@@ -80,14 +81,16 @@ const Marker: React.FC<{
                      width={500}
                      height={500}
                   />
-                  <TouchableOpacity
-                     onPress={() => handleScannedQRCode(roomName)}
-                     className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
-                  >
-                     <Text className="text-white text-lg font-medium">
-                        Assume Scanned (dev)
-                     </Text>
-                  </TouchableOpacity>
+                  {!prod && (
+                     <TouchableOpacity
+                        onPress={() => handleScannedQRCode(roomName)}
+                        className="px-4 py-2 mx-auto mt-2 text-center bg-blue-500 rounded-md"
+                     >
+                        <Text className="text-white text-lg font-medium">
+                           Assume Scanned
+                        </Text>
+                     </TouchableOpacity>
+                  )}
                </View>
             </View>
          </Modal>
