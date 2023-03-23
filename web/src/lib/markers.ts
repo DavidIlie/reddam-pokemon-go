@@ -118,78 +118,43 @@ export const markers: Room[] = [
 
 export const getNonAdjacentRooms = (
   rooms: Room[],
-  foundRooms: Room[]
-): string[] => {
-  const rooms1 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
-  const rooms2 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
-  const rooms3 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
-  const rooms4 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
-  const grouped = [rooms1, rooms2, rooms3, rooms4];
-  let groupedRoomsProper = ([] as string[]).concat(...grouped);
-
-  if (groupedRoomsProper.includes("ART")) {
-    if (groupedRoomsProper.includes("ARTB")) {
-      groupedRoomsProper.filter((s) => s !== "ARTB");
-      groupedRoomsProper = [
-        ...groupedRoomsProper,
-        getNonAdjancentRoom(rooms, foundRooms)
-          .filter((s) => s.floor === 2)
-          .map((s) => s.roomName)[0],
-      ];
-    }
-  } else if (groupedRoomsProper.includes("ARTB")) {
-    if (groupedRoomsProper.includes("ART")) {
-      groupedRoomsProper.filter((s) => s !== "ART");
-      groupedRoomsProper = [
-        ...groupedRoomsProper,
-        getNonAdjancentRoom(rooms, foundRooms)
-          .filter((s) => s.floor === 2)
-          .map((s) => s.roomName)[0],
-      ];
-    }
-  }
-
-  return groupedRoomsProper;
-};
-
-const getNonAdjancentRoom = (rooms: Room[], foundRooms: Room[]): Room[] => {
-  const remainingRooms = rooms.filter((room) => !foundRooms.includes(room));
-  const shuffledRooms = shuffleArray(remainingRooms);
-
+  previousRooms: Room[] = []
+): Room[] => {
   let nonAdjacentRooms: Room[] = [];
 
-  for (
-    let i = 0;
-    i < shuffledRooms.length && nonAdjacentRooms.length < 4;
-    i++
-  ) {
-    const room = shuffledRooms[i];
-    if (
-      !nonAdjacentRooms.some((r) => isAdjacent(r, room)) &&
-      nonAdjacentRooms.every((r) => r.floor !== room.floor)
-    ) {
-      nonAdjacentRooms.push(room);
+  rooms.forEach((room) => {
+    if (!previousRooms.find((r) => r.roomName === room.roomName)) {
+      let f1Count = 0;
+      let f2Count = 0;
+      nonAdjacentRooms.forEach((nonRoom) => {
+        if (nonRoom.floor === 1) {
+          f1Count += 1;
+        } else if (nonRoom.floor === 2) {
+          f2Count += 1;
+        }
+      });
+      if (
+        (f1Count < 3 && room.floor === 1) ||
+        (f2Count < 3 && room.floor === 2)
+      ) {
+        let isAdjacent = false;
+        nonAdjacentRooms.forEach((nonRoom) => {
+          const xDiff = Math.abs(room.left - nonRoom.left);
+          const yDiff = Math.abs(room.top - nonRoom.top);
+          if (
+            (xDiff <= 30 && yDiff <= 50) ||
+            (xDiff <= 25 && yDiff <= 80) ||
+            (xDiff <= 70 && yDiff <= 44)
+          ) {
+            isAdjacent = true;
+          }
+        });
+        if (!isAdjacent) {
+          nonAdjacentRooms.push(room);
+        }
+      }
     }
-  }
+  });
 
-  return nonAdjacentRooms;
-};
-
-const shuffleArray = <T>(array: T[]): T[] => {
-  const shuffledArray = [...array];
-
-  for (let i = shuffledArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-  }
-
-  return shuffledArray;
-};
-
-const isAdjacent = (room1: Room, room2: Room): boolean => {
-  return (
-    Math.abs(room1.left - room2.left) <= 50 &&
-    Math.abs(room1.top - room2.top) <= 30 &&
-    room1.floor === room2.floor
-  );
+  return nonAdjacentRooms.slice(0, 6);
 };

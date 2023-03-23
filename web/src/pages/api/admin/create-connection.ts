@@ -7,18 +7,12 @@ const handler: NextApiHandler = async (req, res) => {
   const check = await checkAuth(req.cookies.auth || "");
   if (!check) return res.status(401).json({ message: "bye" });
 
-  let { name, players } = JSON.parse(req.body);
+  let { name } = JSON.parse(req.body);
 
-  if (!name && !players) return res.status(400).json({ message: "bye" });
-
-  try {
-    players = players.split(", ");
-  } catch (error) {
-    return res.status(400).json({ message: "bye" });
-  }
+  if (!name) return res.status(400).json({ message: "bye" });
 
   const connection = await prisma.connection.create({
-    data: { name: name, players: players },
+    data: { name: name },
   });
 
   return res.json({ code: connection.connectionId });

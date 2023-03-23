@@ -13,9 +13,6 @@ export const AuthWSWrapper: React.FC<{
    uuid: string;
    children: React.ReactNode;
 }> = ({ uuid, children }) => {
-   // const [socketUrl] = useState(
-   //    `wss://reddam-pokemon-go-production.up.railway.app/ws?auth=${uuid}`
-   // );
    const [socketUrl] = useState(`ws://10.172.140.16:3001/ws?auth=${uuid}`);
 
    const ws = useWebSocket(socketUrl, {

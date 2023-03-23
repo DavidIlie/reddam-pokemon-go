@@ -8,13 +8,14 @@ datasource db {
 }
 
 model Connection {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   name            String
-  players         String[]
-  connectionId    String?  @default(uuid())
-  firstConnection Boolean  @default(true)
+  connectionId    String?   @default(uuid())
+  firstConnection Boolean   @default(true)
   foundRooms      String[]
   rooms           String[]
+  connected       Boolean   @default(false)
+  finishTime      DateTime?
 }
 
 enum GameStatus {
@@ -24,7 +25,8 @@ enum GameStatus {
 }
 
 model GameState {
-  id      String     @id @default(uuid())
-  status  GameStatus @default(NOT_STARTED)
-  endTime DateTime?
+  id        String     @id @default(uuid())
+  status    GameStatus @default(NOT_STARTED)
+  endTime   DateTime?
+  startTime DateTime?
 }

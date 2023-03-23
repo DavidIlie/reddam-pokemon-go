@@ -1,9 +1,11 @@
 import type { NextPage, GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import QRCode from "react-qr-code";
 import useSWR from "swr";
 import { Connection, GameState } from "@prisma/client";
+import RenderFinishTime from "../../components/RenderFinishTime";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -15,10 +17,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
 
   if (needPass) return <GetPass />;
 
-  const { push } = useRouter();
-
   const [teamname, setTeamname] = useState("");
-  const [players, setPlayers] = useState("");
 
   const [endTime, setEndTime] = useState<string>("");
 
@@ -43,7 +42,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
 
   return (
     <div className="px-4 py-2">
-      <div className="flex items-center gap-6">
+      <div className="gap-6 sm:flex">
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -51,12 +50,10 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
               method: "POST",
               body: JSON.stringify({
                 name: teamname,
-                players: players,
               }),
             });
             if (r.status !== 200) return alert("error");
             setTeamname("");
-            setPlayers("");
             reload();
           }}
           className="mb-2"
@@ -70,16 +67,8 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
             value={teamname}
             onChange={(e) => setTeamname(e.target.value)}
           />
-          <div className="my-[0.75rem]" />
-          <input
-            className={inputStyle}
-            placeholder="Players"
-            id="players"
-            value={players}
-            onChange={(e) => setPlayers(e.target.value)}
-          />
-          <div className="my-[2rem]" />
-          <button className={buttonStyle} type="submit">
+          <div className="my-2" />
+          <button className={buttonStyle} type="submit" disabled={!teamname}>
             create qr code for login
           </button>
         </form>
@@ -97,6 +86,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
                       body: JSON.stringify({
                         endTime: null,
                         status: "NOT_STARTED",
+                        startTime: null,
                       }),
                     });
                     if (r.status !== 200) alert("check console");
@@ -120,6 +110,7 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
                       data?.gameState.status === "STARTED"
                         ? "FINISHED"
                         : "STARTED",
+                    startTime: new Date(),
                   }),
                 });
                 if (r.status !== 200) alert("check console");
@@ -135,7 +126,6 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
                 : "start game"}
             </button>
             <div className="my-1" />
-            <h1>end time</h1>
             <div className="flex items-center gap-1">
               <input
                 type="datetime-local"
@@ -163,27 +153,27 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
               </button>
             </div>
             <div className="my-1" />
-            <button
-              className={buttonStyle}
-              type="button"
-              onClick={() => {
-                push("/admin/rooms");
-              }}
-            >
-              get room qr codes
-            </button>
           </div>
         )}
+        <div className="sm:w-1/4">
+          <h1 className="text-xl font-medium">misc</h1>-{" "}
+          <Link
+            href="/admin/rooms"
+            className="duration-150 hover:text-blue-500 hover:underline"
+          >
+            get room qr codes
+          </Link>
+        </div>
       </div>
       {isLoading && !data && <div>Loading data...</div>}
-      <div className="mt-2 grid grid-cols-4 justify-evenly gap-4">
+      <div className="mt-2 grid grid-cols-2 justify-evenly gap-1 sm:grid-cols-4 sm:gap-4">
         {data?.connections?.map((connection) => (
           <div
             key={connection.id}
-            className="mb-2 w-min select-none text-center"
+            className="mb-2 select-none text-center sm:w-min"
           >
             <div
-              className="w-min cursor-pointer bg-gray-500 duration-150 hover:bg-gray-600"
+              className="cursor-pointer bg-gray-500 duration-150 hover:bg-gray-600 sm:w-min"
               onClick={() => {
                 if (revealCode === connection.connectionId)
                   return setRevealCode(null);
@@ -197,22 +187,30 @@ const Admin: NextPage<{ needPass?: boolean; error?: boolean }> = ({
                 }`}
               />
             </div>
-            <h1
-              className="text-lg font-medium"
-              onClick={() => {
-                console.log(connection.connectionId);
-                navigator.clipboard.writeText(connection.connectionId!);
-              }}
-            >
-              {connection.name}
-            </h1>
-            <p>{connection.players.join(", ")}</p>
-            <p>points: {connection.foundRooms.length}</p>
-            {process.env.NODE_ENV !== "production" && (
-              <textarea className="text-mono text-xs text-gray-400">
-                {connection.connectionId}
-              </textarea>
-            )}
+            <div className="flex justify-center gap-2">
+              <div>
+                <h1
+                  className="text-lg font-medium"
+                  onClick={() => {
+                    console.log(connection.connectionId);
+                    navigator.clipboard.writeText(connection.connectionId!);
+                  }}
+                >
+                  {connection.name}
+                </h1>
+                <p>points: {connection.foundRooms.length}</p>
+                <p>connected: {connection.connected === true ? "yes" : "no"}</p>
+                {connection.finishTime && (
+                  <>
+                    finish time:{" "}
+                    <RenderFinishTime
+                      startTime={data?.gameState?.startTime!}
+                      endTime={connection.finishTime}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         ))}
       </div>

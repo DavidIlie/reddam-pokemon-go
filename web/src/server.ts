@@ -38,6 +38,10 @@ const app = async () => {
 
     console.log(`CONNECTION: ${connection.name}`);
     connections.push({ ws: ws as any, connectionId: connection.connectionId! });
+    connection = await prisma.connection.update({
+      where: { id: connection.id },
+      data: { connected: true },
+    });
 
     ws.on("message", async (msg: string) => {
       console.log(msg);
@@ -50,12 +54,14 @@ const app = async () => {
         status: gameState!.status,
         endTime: gameState!.endTime,
         markers: markersFiltered,
+        totalRooms: markers.length,
       });
 
       if (
         gameState!.status === "STARTED" &&
         new Date().getTime() > gameState!.endTime!.getTime()
       ) {
+        console.log("hi");
         connection = await prisma.connection.update({
           where: { id: connection!.id },
           data: { rooms: [] },
@@ -79,7 +85,9 @@ const app = async () => {
             where: { id: connection!.id },
             data: {
               firstConnection: false,
-              rooms: getNonAdjacentRooms(markers, prevMarkers),
+              rooms: getNonAdjacentRooms(markers, prevMarkers).map(
+                (s) => s.roomName
+              ),
             },
           });
           break;
@@ -92,6 +100,24 @@ const app = async () => {
             connectionRooms.includes(s.roomName)
           );
           sendWSMessage(gameData(markersFiltered));
+          break;
+        case "logFinishTime":
+          connection = await prisma.connection.update({
+            where: { id: connection?.id },
+            data: { finishTime: new Date() },
+          });
+          await Promise.all(
+            connections.map(async (c) => {
+              if (c.connectionId !== connection?.connectionId) {
+                c.ws.send(
+                  JSON.stringify({
+                    action: "someoneGotPoint",
+                    res: `${connection?.name} finished!`,
+                  })
+                );
+              }
+            })
+          );
           break;
         case "reportFound":
           let { room } = JSON.parse(msg);
@@ -110,13 +136,10 @@ const app = async () => {
             await Promise.all(
               connections.map(async (c) => {
                 if (c.connectionId !== connection?.connectionId) {
-                  const bigC = await prisma.connection.findFirst({
-                    where: { connectionId: c.connectionId },
-                  });
                   c.ws.send(
                     JSON.stringify({
                       action: "someoneGotPoint",
-                      res: `${bigC!.name} has scored a point!`,
+                      res: `${connection?.name} has scored a point!`,
                     })
                   );
                 }
@@ -129,7 +152,7 @@ const app = async () => {
                 foundRooms: [...connection.foundRooms, room],
               },
             });
-            if (connection.rooms.length < 4) {
+            if (connection.rooms.length < 2) {
               connection = await prisma.connection.update({
                 where: { id: connection!.id },
                 data: {
@@ -138,7 +161,7 @@ const app = async () => {
                     markers.filter((s) =>
                       connection!.foundRooms.includes(s.roomName)
                     )
-                  ),
+                  ).map((s) => s.roomName),
                 },
               });
             }
@@ -156,9 +179,18 @@ const app = async () => {
           break;
       }
     });
-
-    ws.on("close", () => {
-      connections.filter((s) => s.connectionId !== connection!.id);
+    ws.on("close", async () => {
+      connections = connections.filter(
+        (s) => s.connectionId !== connection!.id
+      );
+      const connectionNew = await prisma.connection.findFirst({
+        where: { id: connection?.id },
+      });
+      if (!connectionNew) return;
+      await prisma.connection.update({
+        where: { id: connection?.id },
+        data: { connected: false },
+      });
     });
   });
 

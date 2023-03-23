@@ -27,6 +27,8 @@ const Home: React.FC = () => {
       foundRooms: string[];
       status: "NOT_STARTED" | "STARTED" | "FINISHED";
       endTime?: Date;
+      name: string;
+      totalRooms: number;
       markers: { left: number; top: number; roomName: string; floor: 1 | 2 }[];
    } | null>(null);
    const [floor, setFloor] = useState(1);
@@ -45,30 +47,47 @@ const Home: React.FC = () => {
    }, []);
 
    useEffect(() => {
-      if (ws.lastMessage.data) {
-         const parsed = JSON.parse(ws.lastMessage.data);
-         switch (parsed.action) {
-            case "getGameData":
-               setGameData(parsed.res);
-               setLoading(false);
-               break;
-            case "someoneGotPoint":
-               toast.show(parsed.res, { type: "danger" });
-               break;
-            case "askForGameData":
-               ws.sendJsonMessage({ action: "getGameData" });
-               break;
-            default:
-               break;
+      const shit = async () => {
+         if (ws.lastMessage.data) {
+            const parsed = JSON.parse(ws.lastMessage.data);
+            switch (parsed.action) {
+               case "getGameData":
+                  setGameData(parsed.res);
+                  setLoading(false);
+                  break;
+               case "someoneGotPoint":
+                  try {
+                     toast.show(parsed.res, { type: "danger" });
+                  } catch (error) {}
+                  break;
+               case "askForGameData":
+                  ws.sendJsonMessage({ action: "getGameData" });
+                  break;
+               default:
+                  break;
+            }
          }
-      }
+      };
+      shit();
    }, [ws.lastMessage]);
+
+   useEffect(() => {
+      if (
+         gameData?.foundRooms.length === gameData?.totalRooms &&
+         gameData?.status === "STARTED"
+      ) {
+         ws.sendJsonMessage({ action: "logFinishTime" });
+      }
+   }, [gameData]);
 
    if (loading) return <Loading />;
 
    if (gameData?.status === "NOT_STARTED")
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
+            <Text className="text-2xl font-medium text-center mb-1">
+               name: <Text className="font-normal">{gameData?.name}</Text>
+            </Text>
             <Text className="font-bold text-4xl text-red-500">
                Game Has Not Started 🙄
             </Text>
@@ -84,6 +103,9 @@ const Home: React.FC = () => {
    )
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
+            <Text className="text-2xl font-medium text-center mb-1">
+               name: <Text className="font-normal">{gameData?.name}</Text>
+            </Text>
             <Text className="font-bold text-4xl text-red-500">Finished 🚀</Text>
             <Text className="text-lg">
                You scored{" "}
