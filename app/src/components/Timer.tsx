@@ -4,7 +4,7 @@ import { useWS } from "./WebSocketContext";
 
 const CountdownTimer: React.FC<{ endTime: Date }> = ({ endTime }) => {
    const { ws } = useWS();
-   const [timeLeft, setTimeLeft] = useState("");
+   const [timeLeft, setTimeLeft] = useState("0:00");
 
    useEffect(() => {
       const intervalId = setInterval(() => {

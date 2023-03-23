@@ -121,37 +121,45 @@ export const getNonAdjacentRooms = (
   previousRooms: Room[] = []
 ): Room[] => {
   let nonAdjacentRooms: Room[] = [];
+  let availableRooms = rooms.filter(
+    (room) => !previousRooms.find((r) => r.roomName === room.roomName)
+  );
 
-  rooms.forEach((room) => {
-    if (!previousRooms.find((r) => r.roomName === room.roomName)) {
-      let f1Count = 0;
-      let f2Count = 0;
+  for (let i = 0; i < availableRooms.length; i++) {
+    let randomIndex = Math.floor(Math.random() * availableRooms.length);
+    let tempRoom = availableRooms[i];
+    availableRooms[i] = availableRooms[randomIndex];
+    availableRooms[randomIndex] = tempRoom;
+  }
+
+  availableRooms.forEach((room) => {
+    let f1Count = 0;
+    let f2Count = 0;
+    nonAdjacentRooms.forEach((nonRoom) => {
+      if (nonRoom.floor === 1) {
+        f1Count += 1;
+      } else if (nonRoom.floor === 2) {
+        f2Count += 1;
+      }
+    });
+    if (
+      (f1Count < 3 && room.floor === 1) ||
+      (f2Count < 3 && room.floor === 2)
+    ) {
+      let isAdjacent = false;
       nonAdjacentRooms.forEach((nonRoom) => {
-        if (nonRoom.floor === 1) {
-          f1Count += 1;
-        } else if (nonRoom.floor === 2) {
-          f2Count += 1;
+        const xDiff = Math.abs(room.left - nonRoom.left);
+        const yDiff = Math.abs(room.top - nonRoom.top);
+        if (
+          (xDiff <= 30 && yDiff <= 50) ||
+          (xDiff <= 25 && yDiff <= 80) ||
+          (xDiff <= 70 && yDiff <= 44)
+        ) {
+          isAdjacent = true;
         }
       });
-      if (
-        (f1Count < 3 && room.floor === 1) ||
-        (f2Count < 3 && room.floor === 2)
-      ) {
-        let isAdjacent = false;
-        nonAdjacentRooms.forEach((nonRoom) => {
-          const xDiff = Math.abs(room.left - nonRoom.left);
-          const yDiff = Math.abs(room.top - nonRoom.top);
-          if (
-            (xDiff <= 30 && yDiff <= 50) ||
-            (xDiff <= 25 && yDiff <= 80) ||
-            (xDiff <= 70 && yDiff <= 44)
-          ) {
-            isAdjacent = true;
-          }
-        });
-        if (!isAdjacent) {
-          nonAdjacentRooms.push(room);
-        }
+      if (!isAdjacent) {
+        nonAdjacentRooms.push(room);
       }
     }
   });

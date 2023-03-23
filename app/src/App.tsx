@@ -226,7 +226,8 @@ const Home: React.FC = () => {
                </Text>
                <Text className="text-center text-xl">
                   The team which gets the most{" "}
-                  <Text className="text-blue-500 font-bold">points</Text> in 30
+                  <Text className="text-blue-500 font-bold">points</Text> in{" "}
+                  <CountdownTimer endTime={new Date(gameData?.endTime!)} />{" "}
                   minutes,{" "}
                   <Text className="text-blue-500 font-bold">wins!</Text>
                </Text>
