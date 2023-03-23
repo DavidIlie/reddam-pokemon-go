@@ -19,9 +19,15 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
+    top: 168,
+    left: 68,
+    roomName: "A3",
+    floor: 1,
+  },
+  {
     top: 257,
     left: 30,
-    roomName: "A3",
+    roomName: "A5",
     floor: 1,
   },
   {
@@ -49,8 +55,8 @@ export const markers: Room[] = [
     floor: 1,
   },
   {
-    top: 164,
-    left: 53,
+    top: 168,
+    left: 84,
     roomName: "S113",
     floor: 1,
   },
@@ -66,22 +72,16 @@ export const markers: Room[] = [
     roomName: "S209",
     floor: 2,
   },
-  // {
-  //   top: 253,
-  //   left: 160,
-  //   roomName: "S207a",
-  //   floor: 2,
-  // },
   {
-    top: 252,
-    left: 184,
-    roomName: "S207b",
+    top: 253,
+    left: 160,
+    roomName: "S207a",
     floor: 2,
   },
   {
     top: 252,
-    left: 202,
-    roomName: "S207a",
+    left: 184,
+    roomName: "S207b",
     floor: 2,
   },
   {
@@ -125,7 +125,31 @@ export const getNonAdjacentRooms = (
   const rooms3 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
   const rooms4 = getNonAdjancentRoom(rooms, foundRooms).map((s) => s.roomName);
   const grouped = [rooms1, rooms2, rooms3, rooms4];
-  return ([] as string[]).concat(...grouped);
+  let groupedRoomsProper = ([] as string[]).concat(...grouped);
+
+  if (groupedRoomsProper.includes("ART")) {
+    if (groupedRoomsProper.includes("ARTB")) {
+      groupedRoomsProper.filter((s) => s !== "ARTB");
+      groupedRoomsProper = [
+        ...groupedRoomsProper,
+        getNonAdjancentRoom(rooms, foundRooms)
+          .filter((s) => s.floor === 2)
+          .map((s) => s.roomName)[0],
+      ];
+    }
+  } else if (groupedRoomsProper.includes("ARTB")) {
+    if (groupedRoomsProper.includes("ART")) {
+      groupedRoomsProper.filter((s) => s !== "ART");
+      groupedRoomsProper = [
+        ...groupedRoomsProper,
+        getNonAdjancentRoom(rooms, foundRooms)
+          .filter((s) => s.floor === 2)
+          .map((s) => s.roomName)[0],
+      ];
+    }
+  }
+
+  return groupedRoomsProper;
 };
 
 const getNonAdjancentRoom = (rooms: Room[], foundRooms: Room[]): Room[] => {
@@ -164,8 +188,8 @@ const shuffleArray = <T>(array: T[]): T[] => {
 
 const isAdjacent = (room1: Room, room2: Room): boolean => {
   return (
-    Math.abs(room1.left - room2.left) <= 1 &&
-    Math.abs(room1.top - room2.top) <= 1 &&
+    Math.abs(room1.left - room2.left) <= 50 &&
+    Math.abs(room1.top - room2.top) <= 30 &&
     room1.floor === room2.floor
   );
 };

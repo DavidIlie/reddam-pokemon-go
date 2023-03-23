@@ -2,7 +2,6 @@ import React, { useState, createContext, useContext, useEffect } from "react";
 import { SafeAreaView, Text } from "react-native";
 import useWebSocket, { ReadyState } from "react-native-use-websocket";
 import type { WebSocketHook } from "react-native-use-websocket/lib/typescript/src/lib/types";
-import * as SecureStore from "expo-secure-store";
 
 import { Loading } from "./Loading";
 
@@ -35,6 +34,7 @@ export const AuthWSWrapper: React.FC<{
    useEffect(() => {
       if (__DEV__) console.log(`Websocket State: ${connectionStatus}`);
    }, [connectionStatus]);
+
    if (ws.readyState === ReadyState.CLOSED)
       return (
          <SafeAreaView className="flex justify-center items-center h-full">
