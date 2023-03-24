@@ -16,7 +16,7 @@ I was asked by my school teacher to create a game for students from Year 5 (prim
 
 Mobile App
 
--  React Native Expo
+-  React Native (Expo)
 -  Nativewind
 
 Web App
