@@ -5,6 +5,7 @@ import Link from "next/link";
 import QRCode from "react-qr-code";
 import useSWR from "swr";
 import { Connection, GameState } from "@prisma/client";
+
 import RenderFinishTime from "../../components/RenderFinishTime";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
