@@ -32,6 +32,6 @@ Server
 
 # first run (2023)
 
-it was a massive success, the only problem was that since Year 5's are running around the building, the Wi-Fi connection sometimes disconnected which affected some players.
+it was a massive success, the only problem was that since Year 5's were running around the building, the Wi-Fi connection sometimes disconnected which affected some players.
 
 ![Final Score](https://user-images.githubusercontent.com/47594764/227509829-476104b1-ff05-4b79-b5e7-5a8455f95c51.jpeg)
