@@ -48,28 +48,25 @@ const Home: React.FC = () => {
    }, []);
 
    useEffect(() => {
-      const shit = async () => {
-         if (ws.lastMessage.data) {
-            const parsed = JSON.parse(ws.lastMessage.data);
-            switch (parsed.action) {
-               case "getGameData":
-                  setGameData(parsed.res);
-                  setLoading(false);
-                  break;
-               case "someoneGotPoint":
-                  try {
-                     toast.show(parsed.res, { type: "danger" });
-                  } catch (error) {}
-                  break;
-               case "askForGameData":
-                  ws.sendJsonMessage({ action: "getGameData" });
-                  break;
-               default:
-                  break;
-            }
+      if (ws.lastMessage.data) {
+         const parsed = JSON.parse(ws.lastMessage.data);
+         switch (parsed.action) {
+            case "getGameData":
+               setGameData(parsed.res);
+               setLoading(false);
+               break;
+            case "someoneGotPoint":
+               try {
+                  toast.show(parsed.res, { type: "danger" });
+               } catch (error) {}
+               break;
+            case "askForGameData":
+               ws.sendJsonMessage({ action: "getGameData" });
+               break;
+            default:
+               break;
          }
-      };
-      shit();
+      }
    }, [ws.lastMessage]);
 
    useEffect(() => {
